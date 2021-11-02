@@ -1,7 +1,9 @@
+import OverviewPage from "./pages/OverviewPage";
 
 function App() {
   return (
     <>
+      <OverviewPage />
     </>
   );
 }
