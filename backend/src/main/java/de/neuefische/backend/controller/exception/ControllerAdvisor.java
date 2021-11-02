@@ -14,29 +14,11 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ApiError> handleNoSuchElementException(NoSuchElementException ex){
-        log.error("Resource not found!", ex);
+    @ExceptionHandler(GitHubAuthException.class)
+    public ResponseEntity<ApiError> handleGitHubAuthException(GitHubAuthException ex){
+        log.error("Github Authentication Error!", ex);
 
-        ApiError apiError = new ApiError("Resource not found!", ex.getMessage());
-
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiError> handleIllegalArgumentException(IllegalArgumentException ex){
-        log.error("Given input is not processable!", ex);
-
-        ApiError apiError = new ApiError("Given input is not processable!", ex.getMessage());
-
-        return new ResponseEntity<>(apiError, HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiError> handleBadCredentialsException(BadCredentialsException ex){
-        log.error("Username and password are not valid!", ex);
-
-        ApiError apiError = new ApiError("Username and password are not valid!", ex.getMessage());
+        ApiError apiError = new ApiError("Github Authentication Error!", ex.getMessage());
 
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
