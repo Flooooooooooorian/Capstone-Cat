@@ -1,4 +1,4 @@
-package de.neuefische.backend.security.model;
+package de.neuefische.backend.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GitHubAccessTokenDto {
-
-    @JsonProperty("access_token")
-    private String accessToken;
+public class GithubRepoOwnerDto {
+    @JsonProperty("login")
+    private String name;
 }

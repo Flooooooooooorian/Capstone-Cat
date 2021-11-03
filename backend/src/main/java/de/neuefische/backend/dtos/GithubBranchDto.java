@@ -1,4 +1,4 @@
-package de.neuefische.backend.security.model;
+package de.neuefische.backend.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GitHubLoginDto {
-    String code;
+public class GithubBranchDto {
+
+    private String name;
 }
