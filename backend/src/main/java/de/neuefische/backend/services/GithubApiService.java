@@ -84,13 +84,14 @@ public class GithubApiService {
         return commits.size();
     }
 
+    @SuppressWarnings({"java:S2259"})
     private int getCommitDiffToDefault(String repoUrl, String defaultBranch, String branch) {
         try {
             ResponseEntity<GithubCompareDto> compareResponse = restTemplate.exchange(repoUrl + "/compare/" + defaultBranch + "..." + branch, HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
-            if (compareResponse.getBody() == null) {
-                return 0;
+            if (compareResponse.getBody() != null) {
+                return compareResponse.getBody().getAheadBy();
             }
-            return compareResponse.getBody().getAheadBy();
+            return 0;
         }
         catch (Exception e) {
             return 0;
