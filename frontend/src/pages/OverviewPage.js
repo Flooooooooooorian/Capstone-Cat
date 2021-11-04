@@ -44,12 +44,11 @@ export default function OverviewPage() {
         {field: 'studentName', headerName: 'Student', width: 150},
         {field: 'url', headerName: 'Capstone', width: 150, renderCell: renderCapstoneRepoCell},
         {field: 'updatedAt', headerName: 'Last Commit', width: 170},
-        {field: 'commitCount', headerName: 'Commits', width: 140, renderCell: renderCommits},
-        {field: 'pullsCount', headerName: "PR's", width: 140, renderCell: renderPulls},
+        {field: 'mainCommits', headerName: 'Commits', width: 140, renderCell: renderCommits},
+        {field: 'openPulls', headerName: "PR's", width: 140, renderCell: renderPulls},
         {field: 'coverageBadgeUrl', headerName: 'Coverage', width: 150, renderCell: renderBadge},
         {field: 'qualityBadgeUrl', headerName: 'Quality Gate', width: 150, renderCell: renderBadge},
     ];
-
 
 
     return (
