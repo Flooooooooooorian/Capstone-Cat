@@ -8,10 +8,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,9 +67,13 @@ class GithubApiServiceTest {
 
         //WHEN
 
-        CapstoneDto capstoneDto = githubApiService.getRepoData(repoUrl);
+        Optional<CapstoneDto> optionalCapstoneDto = githubApiService.getRepoData(repoUrl);
 
         //THEN
+
+        assertThat(optionalCapstoneDto.isPresent(), Matchers.is(true));
+
+        CapstoneDto capstoneDto = optionalCapstoneDto.get();
 
         assertThat(capstoneDto.getAllCommits(), Matchers.is(106));
         assertThat(capstoneDto.getMainCommits(), Matchers.is(101));
@@ -76,5 +82,25 @@ class GithubApiServiceTest {
         assertThat(capstoneDto.getStudentName(), Matchers.is("me"));
         assertThat(capstoneDto.getUpdatedAt(), Matchers.is(date));
         assertThat(capstoneDto.getUrl(), Matchers.is("url"));
+    }
+
+    @Test
+    void getRepoDataInvalidUrld() {
+        //GIVEN
+        String repoUrl = "invalidgithub.com/repo";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(githubToken);
+
+        when(restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class))
+                .thenThrow(new RestClientException("Not Found"));
+
+        //WHEN
+
+        Optional<CapstoneDto> capstoneDto = githubApiService.getRepoData(repoUrl);
+
+        //THEN
+
+        assertThat(capstoneDto.isEmpty(), Matchers.is(true));
     }
 }

@@ -20,11 +20,13 @@ public class CapstoneService {
     public List<CapstoneDto> getCapstones() {
         return capstoneRepo.findAll().stream()
                 .map((capstone -> {
-                    CapstoneDto dto = githubApiService.getRepoData(capstone.getGithubApiUrl());
-                    dto.setCoverageBadgeUrl(capstone.getCoverageBadgeUrl());
-                    dto.setQualityBadgeUrl(capstone.getQualityBadgeUrl());
-                    dto.setId(capstone.getId());
-                    return dto;
+                    CapstoneDto capstoneDto = githubApiService.getRepoData(capstone.getGithubApiUrl())
+                            .orElseGet(CapstoneDto::new);
+
+                    capstoneDto.setCoverageBadgeUrl(capstone.getCoverageBadgeUrl());
+                    capstoneDto.setQualityBadgeUrl(capstone.getQualityBadgeUrl());
+                    capstoneDto.setId(capstone.getId());
+                    return capstoneDto;
                 }))
                 .toList();
     }

@@ -1,19 +1,23 @@
 package de.neuefische.backend.services;
 
 import de.neuefische.backend.dtos.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class GithubApiService {
 
     private final RestTemplate restTemplate;
@@ -28,13 +32,15 @@ public class GithubApiService {
         this.restTemplate = restTemplate;
     }
 
-    public CapstoneDto getRepoData(String repoUrl) {
+    public Optional<CapstoneDto> getRepoData(String repoUrl) {
         headers.setBearerAuth(githubToken);
-        GithubRepoDto repoDto = getRepoDetails(repoUrl);
+        Optional<GithubRepoDto> optionalGithubRepoDto = getRepoDetails(repoUrl);
 
-        if (repoDto == null) {
-            return null;
+        if (optionalGithubRepoDto.isEmpty()) {
+            return Optional.empty();
         }
+
+        GithubRepoDto repoDto = optionalGithubRepoDto.get();
 
         List<GithubBranchDto> githubBranchDtos = getBranches(repoUrl);
 
@@ -49,7 +55,7 @@ public class GithubApiService {
 
         int openPulls = Math.toIntExact(allPulls.stream().filter(githubPullDto -> "open".equals(githubPullDto.getState())).count());
 
-        return CapstoneDto.builder()
+        return Optional.of(CapstoneDto.builder()
                 .studentName(repoDto.getOwner().getName())
                 .allCommits(commitsAhead + mainCommits)
                 .mainCommits(mainCommits)
@@ -57,12 +63,18 @@ public class GithubApiService {
                 .openPulls(openPulls)
                 .url(repoDto.getUrl())
                 .updatedAt(repoDto.getUpdatedAt())
-                .build();
+                .build());
     }
 
-    private GithubRepoDto getRepoDetails(String repoUrl) {
-        ResponseEntity<GithubRepoDto> repoResponse = restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
-        return repoResponse.getBody();
+    private Optional<GithubRepoDto> getRepoDetails(String repoUrl) {
+        try {
+            ResponseEntity<GithubRepoDto> repoResponse = restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
+            return Optional.ofNullable(repoResponse.getBody());
+        }
+        catch (RestClientException ex) {
+            log.warn("Github Repo not found! " + repoUrl, ex);
+            return Optional.empty();
+        }
     }
 
     private List<GithubBranchDto> getBranches(String repoUrl) {
