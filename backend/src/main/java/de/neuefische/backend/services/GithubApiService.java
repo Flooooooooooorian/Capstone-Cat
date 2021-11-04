@@ -45,14 +45,15 @@ public class GithubApiService {
                 .mapToInt(Integer::valueOf)
                 .sum();
 
-        int allPulls = getPulls(repoUrl, "all").size();
-        int openPulls = getPulls(repoUrl, "open").size();
+        List<GithubPullDto> allPulls = getPulls(repoUrl);
+
+        int openPulls = Math.toIntExact(allPulls.stream().filter(githubPullDto -> "open".equals(githubPullDto.getState())).count());
 
         return CapstoneDto.builder()
                 .studentName(repoDto.getOwner().getName())
                 .allCommits(commitsAhead + mainCommits)
                 .mainCommits(mainCommits)
-                .allPulls(allPulls)
+                .allPulls(allPulls.size())
                 .openPulls(openPulls)
                 .url(repoDto.getUrl())
                 .updatedAt(repoDto.getUpdatedAt())
@@ -98,8 +99,8 @@ public class GithubApiService {
         }
     }
 
-    private List<GithubPullDto> getPulls(String repoUrl, String state) {
-        ResponseEntity<GithubPullDto[]> pullsResponse = restTemplate.exchange(repoUrl + "/pulls?state=" + state, HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
+    private List<GithubPullDto> getPulls(String repoUrl) {
+        ResponseEntity<GithubPullDto[]> pullsResponse = restTemplate.exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
         if (pullsResponse.getBody() != null) {
             return Arrays.stream(pullsResponse.getBody()).toList();
         } else {
