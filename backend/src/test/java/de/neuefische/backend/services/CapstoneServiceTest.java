@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,8 +61,8 @@ class CapstoneServiceTest {
                 .url("url2")
                 .build();
 
-        when(apiService.getRepoData("githubApi-url-1")).thenReturn(capstoneDto1);
-        when(apiService.getRepoData("githubApi-url-2")).thenReturn(capstoneDto2);
+        when(apiService.getRepoData("githubApi-url-1")).thenReturn(Optional.of(capstoneDto1));
+        when(apiService.getRepoData("githubApi-url-2")).thenReturn(Optional.of(capstoneDto2));
         //WHEN
 
         List<CapstoneDto> capstoneDtos = service.getCapstones();
