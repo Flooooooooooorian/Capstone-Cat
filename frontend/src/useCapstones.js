@@ -15,6 +15,17 @@ export default function useCapstones() {
             .catch(console.error)
     }
 
-    return {capstones}
+    const refreshCapstonesById = (id) => {
+        return axios.get("/api/capstones/refreshed/" + id)
+            .then(response => response.data)
+            .then((data) => {
+                setCapstones((state) => {
+                    return [...state.filter((capstone) => capstone.id !== id), data]
+                })
+            })
+            .catch(console.error)
+    }
+
+    return {capstones, refreshCapstonesById}
 
 }
