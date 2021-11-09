@@ -1,6 +1,7 @@
 package de.neuefische.backend.services;
 
 import de.neuefische.backend.dtos.*;
+import de.neuefische.backend.model.Capstone;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -32,7 +33,7 @@ public class GithubApiService {
         this.restTemplate = restTemplate;
     }
 
-    public Optional<CapstoneDto> getRepoData(String repoUrl) {
+    public Optional<Capstone> getRepoData(String repoUrl) {
         headers.setBearerAuth(githubToken);
         Optional<GithubRepoDto> optionalGithubRepoDto = getRepoDetails(repoUrl);
 
@@ -55,7 +56,7 @@ public class GithubApiService {
 
         int openPulls = Math.toIntExact(allPulls.stream().filter(githubPullDto -> "open".equals(githubPullDto.getState())).count());
 
-        return Optional.of(CapstoneDto.builder()
+        return Optional.of(Capstone.builder()
                 .studentName(repoDto.getOwner().getName())
                 .allCommits(commitsAhead + mainCommits)
                 .mainCommits(mainCommits)

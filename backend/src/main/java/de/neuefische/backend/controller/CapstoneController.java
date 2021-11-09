@@ -1,8 +1,9 @@
 package de.neuefische.backend.controller;
 
-import de.neuefische.backend.dtos.CapstoneDto;
+import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.services.CapstoneService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class CapstoneController {
     }
 
     @GetMapping
-    public List<CapstoneDto> getCapstones() {
+    public List<Capstone> getCapstones() {
         return capstoneService.getCapstones();
     }
 }

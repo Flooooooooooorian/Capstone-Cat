@@ -1,6 +1,5 @@
 package de.neuefische.backend.services;
 
-import de.neuefische.backend.dtos.CapstoneDto;
 import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.repos.CapstoneRepo;
 import org.hamcrest.Matchers;
@@ -11,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +38,7 @@ class CapstoneServiceTest {
 
         List<Capstone> capstones = List.of(capstone1, capstone2);
         when(repo.findAll()).thenReturn(capstones);
-        CapstoneDto capstoneDto1 = CapstoneDto.builder()
+        Capstone capstoneDto1 = Capstone.builder()
                 .openPulls(11)
                 .allPulls(12)
                 .mainCommits(13)
@@ -51,7 +48,7 @@ class CapstoneServiceTest {
                 .url("url1")
                 .build();
 
-        CapstoneDto capstoneDto2 = CapstoneDto.builder()
+        Capstone capstoneDto2 = Capstone.builder()
                 .openPulls(21)
                 .allPulls(22)
                 .mainCommits(23)
@@ -65,10 +62,10 @@ class CapstoneServiceTest {
         when(apiService.getRepoData("githubApi-url-2")).thenReturn(Optional.of(capstoneDto2));
         //WHEN
 
-        List<CapstoneDto> capstoneDtos = service.getCapstones();
+        List<Capstone> capstoneDtos = service.getCapstones();
 
         //THEN
-        CapstoneDto expected1 = CapstoneDto.builder()
+        Capstone expected1 = Capstone.builder()
                 .openPulls(11)
                 .allPulls(12)
                 .mainCommits(13)
@@ -81,7 +78,7 @@ class CapstoneServiceTest {
                 .coverageBadgeUrl("coverage-url-1")
                 .build();
 
-        CapstoneDto expected2 = CapstoneDto.builder()
+        Capstone expected2 = Capstone.builder()
                 .openPulls(21)
                 .allPulls(22)
                 .mainCommits(23)

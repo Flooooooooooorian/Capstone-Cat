@@ -1,6 +1,7 @@
 package de.neuefische.backend.services;
 
 import de.neuefische.backend.dtos.*;
+import de.neuefische.backend.model.Capstone;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,11 +13,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -67,13 +66,13 @@ class GithubApiServiceTest {
 
         //WHEN
 
-        Optional<CapstoneDto> optionalCapstoneDto = githubApiService.getRepoData(repoUrl);
+        Optional<Capstone> optionalCapstone = githubApiService.getRepoData(repoUrl);
 
         //THEN
 
-        assertThat(optionalCapstoneDto.isPresent(), Matchers.is(true));
+        assertThat(optionalCapstone.isPresent(), Matchers.is(true));
 
-        CapstoneDto capstoneDto = optionalCapstoneDto.get();
+        Capstone capstoneDto = optionalCapstone.get();
 
         assertThat(capstoneDto.getAllCommits(), Matchers.is(106));
         assertThat(capstoneDto.getMainCommits(), Matchers.is(101));
@@ -97,7 +96,7 @@ class GithubApiServiceTest {
 
         //WHEN
 
-        Optional<CapstoneDto> capstoneDto = githubApiService.getRepoData(repoUrl);
+        Optional<Capstone> capstoneDto = githubApiService.getRepoData(repoUrl);
 
         //THEN
 

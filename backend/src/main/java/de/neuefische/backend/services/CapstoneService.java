@@ -1,6 +1,6 @@
 package de.neuefische.backend.services;
 
-import de.neuefische.backend.dtos.CapstoneDto;
+import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.repos.CapstoneRepo;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +17,11 @@ public class CapstoneService {
         this.githubApiService = githubApiService;
     }
 
-    public List<CapstoneDto> getCapstones() {
+    public List<Capstone> getCapstones() {
         return capstoneRepo.findAll().stream()
                 .map((capstone -> {
-                    CapstoneDto capstoneDto = githubApiService.getRepoData(capstone.getGithubApiUrl())
-                            .orElseGet(CapstoneDto::new);
+                    Capstone capstoneDto = githubApiService.getRepoData(capstone.getGithubApiUrl())
+                            .orElseGet(Capstone::new);
 
                     capstoneDto.setCoverageBadgeUrl(capstone.getCoverageBadgeUrl());
                     capstoneDto.setQualityBadgeUrl(capstone.getQualityBadgeUrl());
