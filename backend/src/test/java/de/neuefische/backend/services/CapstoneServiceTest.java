@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CapstoneServiceTest {
 
@@ -38,34 +37,65 @@ class CapstoneServiceTest {
 
         List<Capstone> capstones = List.of(capstone1, capstone2);
         when(repo.findAll()).thenReturn(capstones);
-        Capstone capstoneDto1 = Capstone.builder()
-                .openPulls(11)
-                .allPulls(12)
-                .mainCommits(13)
-                .allCommits(14)
-                .studentName("name1")
-                .updatedAt(LocalDate.now())
-                .url("url1")
-                .build();
 
-        Capstone capstoneDto2 = Capstone.builder()
-                .openPulls(21)
-                .allPulls(22)
-                .mainCommits(23)
-                .allCommits(24)
-                .studentName("name1")
-                .updatedAt(LocalDate.now())
-                .url("url2")
-                .build();
-
-        when(apiService.getRepoData("githubApi-url-1")).thenReturn(Optional.of(capstoneDto1));
-        when(apiService.getRepoData("githubApi-url-2")).thenReturn(Optional.of(capstoneDto2));
         //WHEN
 
         List<Capstone> capstoneDtos = service.getCapstones();
 
         //THEN
         Capstone expected1 = Capstone.builder()
+                .id("1")
+                .qualityBadgeUrl("badge-url-1")
+                .coverageBadgeUrl("coverage-url-1")
+                .githubApiUrl("githubApi-url-1")
+                .build();
+
+        Capstone expected2 = Capstone.builder()
+                .id("2")
+                .coverageBadgeUrl("coverage-url-2")
+                .qualityBadgeUrl("badge-url-2")
+                .githubApiUrl("githubApi-url-2")
+                .build();
+
+        verify(repo).findAll();
+        assertThat(capstoneDtos, Matchers.contains(expected1, expected2));
+    }
+
+    @Test
+    void refreshCapstone() {
+        //GIVEN
+        Capstone capstone1 = Capstone.builder()
+                .id("1")
+                .qualityBadgeUrl("badge-url-1")
+                .coverageBadgeUrl("coverage-url-1")
+                .githubApiUrl("githubApi-url-1")
+                .build();
+
+        when(repo.findById("1")).thenReturn(Optional.of(capstone1));
+        when(repo.save(capstone1)).thenReturn(capstone1);
+
+                Capstone capstoneDto1 = Capstone.builder()
+                        .openPulls(11)
+                        .allPulls(12)
+                        .mainCommits(13)
+                        .allCommits(14)
+                        .studentName("name1")
+                        .updatedAt(LocalDate.now())
+                        .url("url1")
+                        .build();
+
+        when(apiService.getRepoData("githubApi-url-1")).thenReturn(Optional.of(capstoneDto1));
+
+        //WHEN
+
+        Capstone capstoneDto = service.refreshCapstone("1");
+
+        //THEN
+        Capstone expected1 = Capstone.builder()
+                .id("1")
+                .qualityBadgeUrl("badge-url-1")
+                .coverageBadgeUrl("coverage-url-1")
+                .githubApiUrl("githubApi-url-1")
                 .openPulls(11)
                 .allPulls(12)
                 .mainCommits(13)
@@ -73,24 +103,11 @@ class CapstoneServiceTest {
                 .studentName("name1")
                 .updatedAt(LocalDate.now())
                 .url("url1")
-                .id("1")
-                .qualityBadgeUrl("badge-url-1")
-                .coverageBadgeUrl("coverage-url-1")
                 .build();
 
-        Capstone expected2 = Capstone.builder()
-                .openPulls(21)
-                .allPulls(22)
-                .mainCommits(23)
-                .allCommits(24)
-                .studentName("name1")
-                .updatedAt(LocalDate.now())
-                .url("url2")
-                .id("2")
-                .coverageBadgeUrl("coverage-url-2")
-                .qualityBadgeUrl("badge-url-2")
-                .build();
-
-        assertThat(capstoneDtos, Matchers.contains(expected1, expected2));
+        verify(repo).findById("1");
+        verify(repo).save(capstone1);
+        verify(apiService).getRepoData("githubApi-url-1");
+        assertThat(capstoneDto, Matchers.is(expected1));
     }
 }

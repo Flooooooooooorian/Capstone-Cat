@@ -5,6 +5,8 @@ import de.neuefische.backend.repos.CapstoneRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CapstoneService {
@@ -18,16 +20,28 @@ public class CapstoneService {
     }
 
     public List<Capstone> getCapstones() {
-        return capstoneRepo.findAll().stream()
-                .map((capstone -> {
-                    Capstone capstoneDto = githubApiService.getRepoData(capstone.getGithubApiUrl())
-                            .orElseGet(Capstone::new);
+        return capstoneRepo.findAll();
+    }
 
-                    capstoneDto.setCoverageBadgeUrl(capstone.getCoverageBadgeUrl());
-                    capstoneDto.setQualityBadgeUrl(capstone.getQualityBadgeUrl());
-                    capstoneDto.setId(capstone.getId());
-                    return capstoneDto;
-                }))
-                .toList();
+    public Capstone refreshCapstone(String id) {
+        Optional<Capstone> optionalCapstone = capstoneRepo.findById(id);
+        Capstone capstone = optionalCapstone.orElseThrow(() -> new NoSuchElementException("Capstone with id: " + id + " not found!"));
+
+        Capstone refreshedCapstone = githubApiService.getRepoData(capstone.getGithubApiUrl())
+                .orElseGet(Capstone::new);
+
+        if (capstone.getStudentName() == null) {
+            capstone.setStudentName(refreshedCapstone.getStudentName());
+        }
+        if (capstone.getUrl() == null) {
+            capstone.setUrl(refreshedCapstone.getUrl());
+        }
+
+        capstone.setAllCommits(refreshedCapstone.getAllCommits());
+        capstone.setMainCommits(refreshedCapstone.getMainCommits());
+        capstone.setAllPulls(refreshedCapstone.getAllPulls());
+        capstone.setOpenPulls(refreshedCapstone.getOpenPulls());
+        capstone.setUpdatedAt(refreshedCapstone.getUpdatedAt());
+        return capstoneRepo.save(capstone);
     }
 }

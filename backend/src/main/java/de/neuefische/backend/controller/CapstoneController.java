@@ -2,10 +2,7 @@ package de.neuefische.backend.controller;
 
 import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.services.CapstoneService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +19,10 @@ public class CapstoneController {
     @GetMapping
     public List<Capstone> getCapstones() {
         return capstoneService.getCapstones();
+    }
+
+    @GetMapping("/refreshed/{id}")
+    public Capstone refreshCapstoneById(@PathVariable String id) {
+        return capstoneService.refreshCapstone(id);
     }
 }
