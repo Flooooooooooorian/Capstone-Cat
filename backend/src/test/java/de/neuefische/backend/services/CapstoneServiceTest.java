@@ -5,7 +5,6 @@ import de.neuefische.backend.repos.CapstoneRepo;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
