@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -47,10 +48,24 @@ public class GithubApiService {
 
         int mainCommits = getCommitCountFromDefault(repoUrl, repoDto.getDefaultBranch());
 
-        int commitsAhead = githubBranchDtos.stream()
-                .map(githubBranchDto -> getCommitDiffToDefault(repoUrl, repoDto.getDefaultBranch(), githubBranchDto.getName()))
+        List<GithubCompareDto> compareDtos = githubBranchDtos.stream()
+                .filter(githubBranchDto -> !githubBranchDto.getName().equals(repoDto.defaultBranch))
+                .map(githubBranchDto -> compareBranchWithDefault(repoUrl, repoDto.getDefaultBranch(), githubBranchDto.getName()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
+
+        int commitsAhead = compareDtos.stream()
+                .map(GithubCompareDto::getAheadBy)
                 .mapToInt(Integer::valueOf)
                 .sum();
+
+
+        LocalDateTime mostRecentCommitDate = compareDtos.stream()
+                .flatMap(githubCompareDto -> githubCompareDto.getCommits().stream())
+                .map(githubCommitDto -> githubCommitDto.getCommit().getCommitter().getDate())
+                .max(Comparator.naturalOrder())
+                .orElse(null);
 
         List<GithubPullDto> allPulls = getPulls(repoUrl);
 
@@ -58,12 +73,13 @@ public class GithubApiService {
 
         return Optional.of(Capstone.builder()
                 .studentName(repoDto.getOwner().getName())
+                .updatedAt(mostRecentCommitDate)
                 .allCommits(commitsAhead + mainCommits)
                 .mainCommits(mainCommits)
                 .allPulls(allPulls.size())
                 .openPulls(openPulls)
                 .url(repoDto.getUrl())
-                .updatedAt(repoDto.getUpdatedAt())
+                .updatedDefaultAt(repoDto.getUpdatedAt())
                 .build());
     }
 
@@ -71,8 +87,7 @@ public class GithubApiService {
         try {
             ResponseEntity<GithubRepoDto> repoResponse = restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
             return Optional.ofNullable(repoResponse.getBody());
-        }
-        catch (RestClientException ex) {
+        } catch (RestClientException ex) {
             log.warn("Github Repo not found! " + repoUrl, ex);
             return Optional.empty();
         }
@@ -83,6 +98,7 @@ public class GithubApiService {
         if (branchResponse.getBody() != null) {
             return Arrays.stream(branchResponse.getBody()).toList();
         } else {
+            log.debug("No Branches found! " + repoUrl);
             return new ArrayList<>();
         }
     }
@@ -98,18 +114,20 @@ public class GithubApiService {
         return commits.size();
     }
 
-    @SuppressWarnings({"java:S2259"})
-    private int getCommitDiffToDefault(String repoUrl, String defaultBranch, String branch) {
+    private Optional<GithubCompareDto> compareBranchWithDefault(String repoUrl, String defaultBranch, String branch) {
         try {
             ResponseEntity<GithubCompareDto> compareResponse = restTemplate.exchange(repoUrl + "/compare/" + defaultBranch + "..." + branch, HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
             if (compareResponse.getBody() != null) {
-                return compareResponse.getBody().getAheadBy();
+                GithubCompareDto compareDto = compareResponse.getBody();
+                compareDto.setBranchName(branch);
+                return Optional.of(compareDto);
             }
-            return 0;
+            log.debug("No Comparison! " + repoUrl+"/compare/" + defaultBranch + "..." + branch);
+            return Optional.empty();
+        } catch (Exception e) {
+            log.warn("Could not compare git branches! (" + repoUrl + "/compare/" + defaultBranch + "..." + branch + ")", e);
         }
-        catch (Exception e) {
-            return 0;
-        }
+        return Optional.empty();
     }
 
     private List<GithubPullDto> getPulls(String repoUrl) {
@@ -117,6 +135,7 @@ public class GithubApiService {
         if (pullsResponse.getBody() != null) {
             return Arrays.stream(pullsResponse.getBody()).toList();
         } else {
+            log.debug("No Pulls! " + repoUrl);
             return new ArrayList<>();
         }
     }
