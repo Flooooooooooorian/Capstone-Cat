@@ -70,12 +70,12 @@ public class GithubApiService {
 
         return Optional.of(Capstone.builder()
                 .studentName(repoDto.getOwner().getName())
-                .updatedAt(mostRecentCommitDate)
                 .allCommits(commitsAhead + mainCommits)
                 .mainCommits(mainCommits)
                 .allPulls(allPulls.size())
                 .openPulls(openPulls)
                 .url(repoDto.getUrl())
+                .updatedAt(mostRecentCommitDate != null ? mostRecentCommitDate : repoDto.getUpdatedAt())
                 .updatedDefaultAt(repoDto.getUpdatedAt())
                 .build());
     }
@@ -112,17 +112,18 @@ public class GithubApiService {
     }
 
     private Optional<GithubCompareDto> compareBranchWithDefault(String repoUrl, String defaultBranch, String branch) {
+        String url = repoUrl + "/compare/" + defaultBranch + "..." + branch;
         try {
-            ResponseEntity<GithubCompareDto> compareResponse = restTemplate.exchange(repoUrl + "/compare/" + defaultBranch + "..." + branch, HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
-            if (compareResponse.getBody() != null) {
-                GithubCompareDto compareDto = compareResponse.getBody();
+            ResponseEntity<GithubCompareDto> compareResponse = restTemplate.exchange(url , HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
+            GithubCompareDto compareDto = compareResponse.getBody();
+            if (compareDto != null) {
                 compareDto.setBranchName(branch);
                 return Optional.of(compareDto);
             }
-            log.debug("No Comparison! " + repoUrl+"/compare/" + defaultBranch + "..." + branch);
+            log.debug("No Comparison! " + url);
             return Optional.empty();
         } catch (Exception e) {
-            log.warn("Could not compare git branches! (" + repoUrl + "/compare/" + defaultBranch + "..." + branch + ")", e);
+            log.warn("Could not compare git branches! (" + url + ")", e);
         }
         return Optional.empty();
     }
