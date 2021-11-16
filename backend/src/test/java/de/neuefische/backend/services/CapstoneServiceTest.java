@@ -5,7 +5,7 @@ import de.neuefische.backend.repos.CapstoneRepo;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,13 +74,15 @@ class CapstoneServiceTest {
         when(repo.findById("1")).thenReturn(Optional.of(capstone1));
         when(repo.save(capstone1)).thenReturn(capstone1);
 
+        LocalDateTime date = LocalDateTime.now();
+
                 Capstone capstoneDto1 = Capstone.builder()
                         .openPulls(11)
                         .allPulls(12)
                         .mainCommits(13)
                         .allCommits(14)
                         .studentName("name1")
-                        .updatedAt(LocalDate.now())
+                        .updatedAt(date)
                         .url("url1")
                         .build();
 
@@ -101,7 +103,7 @@ class CapstoneServiceTest {
                 .mainCommits(13)
                 .allCommits(14)
                 .studentName("name1")
-                .updatedAt(LocalDate.now())
+                .updatedAt(date)
                 .url("url1")
                 .build();
 

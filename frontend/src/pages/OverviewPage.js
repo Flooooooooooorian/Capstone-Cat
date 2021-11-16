@@ -75,13 +75,13 @@ export default function OverviewPage() {
             <LoadingButton variant="outlined" onClick={handleOnClick}>
                 <CachedIcon />
             </LoadingButton>
-
         )
     }
 
     const columns = [
         {field: 'studentName', headerName: 'Student', width: 150},
         {field: 'url', headerName: 'Capstone', width: 150, renderCell: renderCapstoneRepoCell},
+        {field: 'updatedDefaultAt', headerName: 'Last Main Commit', width: 170},
         {field: 'updatedAt', headerName: 'Last Commit', width: 170},
         {field: 'mainCommits', headerName: 'Commits', width: 140, renderCell: renderCommits},
         {field: 'openPulls', headerName: "PR's", width: 140, renderCell: renderPulls},

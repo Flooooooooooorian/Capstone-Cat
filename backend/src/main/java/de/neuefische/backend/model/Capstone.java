@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +23,8 @@ public class Capstone {
 
     private String studentName;
     private String url;
-    private LocalDate updatedAt;
+    private LocalDateTime updatedDefaultAt;
+    private LocalDateTime updatedAt;
     private int allCommits;
     private int mainCommits;
     private int allPulls;

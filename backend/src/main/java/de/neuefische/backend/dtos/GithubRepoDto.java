@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +22,5 @@ public class GithubRepoDto {
     private String url;
 
     @JsonProperty("updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

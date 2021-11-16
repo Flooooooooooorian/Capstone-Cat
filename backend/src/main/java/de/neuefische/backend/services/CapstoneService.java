@@ -42,6 +42,7 @@ public class CapstoneService {
         capstone.setAllPulls(refreshedCapstone.getAllPulls());
         capstone.setOpenPulls(refreshedCapstone.getOpenPulls());
         capstone.setUpdatedAt(refreshedCapstone.getUpdatedAt());
+        capstone.setUpdatedDefaultAt(refreshedCapstone.getUpdatedDefaultAt());
         return capstoneRepo.save(capstone);
     }
 }
