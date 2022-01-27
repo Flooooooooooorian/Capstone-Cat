@@ -1,6 +1,6 @@
 package de.neuefische.backend.services;
 
-import de.neuefische.backend.dtos.*;
+import de.neuefische.backend.dtos.github.*;
 import de.neuefische.backend.model.Capstone;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

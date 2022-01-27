@@ -1,20 +1,30 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {DataGrid} from '@mui/x-data-grid';
-import useCapstones from "../useCapstones";
+import useCourse from "../useCourse";
 import {Typography} from "@mui/material";
 import styled from "styled-components";
 import CachedIcon from '@mui/icons-material/Cached';
 import {LoadingButton} from "@mui/lab";
+import {useParams} from "react-router-dom";
 
-export default function OverviewPage() {
+export default function CoursePage() {
+
+    const {courseId} = useParams()
+
     const [loading, setLoading] = useState({})
-    const {capstones, refreshCapstonesById} = useCapstones()
+    const {course, loadCapstones, refreshCapstonesById} = useCourse()
+
+    console.log(course)
+
+    useEffect(() => {
+        loadCapstones(courseId)
+    }, [])
 
     const handleLoadCapstoneBy = (id) => {
         setLoading((currentState) => {
             return {...currentState, [id]: true}
         })
-        refreshCapstonesById(id)
+        refreshCapstonesById(courseId, id)
             .then(() => {
                 setLoading((currentState) => {
                     return {...currentState, [id]: false}
@@ -66,7 +76,7 @@ export default function OverviewPage() {
 
     const renderRefreshHeader = () => {
         const handleOnClick = () => {
-            capstones.forEach((capstone) => {
+            course.capstones.forEach((capstone) => {
                 handleLoadCapstoneBy(capstone.id)
             })
         }
@@ -93,7 +103,8 @@ export default function OverviewPage() {
 
     return (
         <div style={{height: 800, width: '100%'}}>
-            <DataGrid rows={capstones} columns={columns}/>
+            <Typography variant={"h6"}>{course?.name}</Typography>
+            <DataGrid rows={course?.capstones} columns={columns}/>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-package de.neuefische.backend.dtos;
+package de.neuefische.backend.dtos.github;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

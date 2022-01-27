@@ -1,6 +1,6 @@
 package de.neuefische.backend.services;
 
-import de.neuefische.backend.dtos.*;
+import de.neuefische.backend.dtos.github.*;
 import de.neuefische.backend.model.Capstone;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

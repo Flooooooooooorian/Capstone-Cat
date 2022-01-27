@@ -1,4 +1,5 @@
-package de.neuefische.backend.dtos;
+package de.neuefische.backend.dtos.github;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GithubDetailedCommitDto {
-   private GithubCommitterDto committer;
+public class GithubCommitDto {
+
+    private GithubDetailedCommitDto commit;
 }

@@ -1,32 +1,18 @@
 package de.neuefische.backend.services;
 
 import de.neuefische.backend.model.Capstone;
-import de.neuefische.backend.repos.CapstoneRepo;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CapstoneService {
 
-    private final CapstoneRepo capstoneRepo;
     private final GithubApiService githubApiService;
 
-    public CapstoneService(CapstoneRepo capstoneRepo, GithubApiService githubApiService) {
-        this.capstoneRepo = capstoneRepo;
+    public CapstoneService(GithubApiService githubApiService) {
         this.githubApiService = githubApiService;
     }
 
-    public List<Capstone> getCapstones() {
-        return capstoneRepo.findAll();
-    }
-
-    public Capstone refreshCapstone(String id) {
-        Optional<Capstone> optionalCapstone = capstoneRepo.findById(id);
-        Capstone capstone = optionalCapstone.orElseThrow(() -> new NoSuchElementException("Capstone with id: " + id + " not found!"));
-
+    public Capstone refreshCapstone(Capstone capstone) {
         Capstone refreshedCapstone = githubApiService.getRepoData(capstone.getGithubApiUrl())
                 .orElseGet(Capstone::new);
 
@@ -43,6 +29,6 @@ public class CapstoneService {
         capstone.setOpenPulls(refreshedCapstone.getOpenPulls());
         capstone.setUpdatedAt(refreshedCapstone.getUpdatedAt());
         capstone.setUpdatedDefaultAt(refreshedCapstone.getUpdatedDefaultAt());
-        return capstoneRepo.save(capstone);
+        return capstone;
     }
 }
