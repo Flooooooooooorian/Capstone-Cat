@@ -53,7 +53,7 @@ jobs:
     needs: build-backend
     environment:
       name: production-heroku
-      url: https://rem-21-4-todo.herokuapp.com/
+      url: https://capstone-cat.herokuapp.com/
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:

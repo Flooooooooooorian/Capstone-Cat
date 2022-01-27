@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CapstoneRepo extends PagingAndSortingRepository<Capstone, String> {
     List<Capstone> findAll();
+    List<Capstone> findTopByOrderByUpdatedAtDesc();
 }

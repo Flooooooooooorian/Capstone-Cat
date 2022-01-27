@@ -1,16 +1,16 @@
 package de.neuefische.backend.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class GithubCommitterDto {
-    private LocalDateTime date;
+public class CapstoneCreationDto {
+    private String id = UUID.randomUUID().toString();
+    private String name;
+    private String githubApiUrl;
 }

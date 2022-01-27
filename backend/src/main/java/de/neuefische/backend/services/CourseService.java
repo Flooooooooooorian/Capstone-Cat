@@ -1,5 +1,8 @@
 package de.neuefische.backend.services;
 
+import de.neuefische.backend.dtos.CapstoneCreationDto;
+import de.neuefische.backend.dtos.CourseCreationDto;
+import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.model.Course;
 import de.neuefische.backend.repos.CourseRepo;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,22 @@ public class CourseService {
     public CourseService(CourseRepo repo, CapstoneService capstoneService) {
         this.repo = repo;
         this.capstoneService = capstoneService;
+    }
+
+    public Course createCourse(CourseCreationDto courseDto) {
+        List<Capstone> capstones = new ArrayList<>();
+        for (CapstoneCreationDto capstone : courseDto.getCapstones()) {
+            capstones.add(Capstone.builder()
+                            .id(UUID.randomUUID().toString())
+                            .githubApiUrl(capstone.getGithubApiUrl())
+                            .studentName(capstone.getName())
+                    .build());
+        }
+
+        return repo.save(Course.builder()
+                .name(courseDto.getName())
+                .capstones(capstones)
+                .build());
     }
 
     public List<Course> getAllCourses() {
@@ -38,12 +57,12 @@ public class CourseService {
         Course course = getCourseById(courseId);
 
         course.setCapstones(course.getCapstones().stream()
-                        .map(capstone -> {
-                            if (capstone.getId().equals(capstoneId)) {
-                                return capstoneService.refreshCapstone(capstone);
-                            }
-                            return capstone;
-                        })
+                .map(capstone -> {
+                    if (capstone.getId().equals(capstoneId)) {
+                        return capstoneService.refreshCapstone(capstone);
+                    }
+                    return capstone;
+                })
                 .toList());
 
         return repo.save(course);
