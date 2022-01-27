@@ -1,17 +1,10 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import axios from "axios";
 
 export default function useCourse() {
     const [course, setCourse] = useState({capstones: []})
 
     const loadCapstones = (courseId) => {
-        axios.get(`/api/course/${courseId}`)
-            .then(response => response.data)
-            .then(setCourse)
-            .catch(console.error)
-    }
-
-    const refreshAllCapstones = (courseId) => {
         axios.get(`/api/course/${courseId}`)
             .then(response => response.data)
             .then(setCourse)
@@ -27,6 +20,6 @@ export default function useCourse() {
             .catch(console.error)
     }
 
-    return {course, loadCapstones, refreshAllCapstones, refreshCapstonesById}
+    return {course, loadCapstones, refreshCapstonesById}
 
 }

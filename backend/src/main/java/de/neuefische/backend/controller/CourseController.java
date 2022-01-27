@@ -1,13 +1,11 @@
 package de.neuefische.backend.controller;
 
 import de.neuefische.backend.dtos.CourseCreationDto;
-import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.model.Course;
 import de.neuefische.backend.services.CourseService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/course")

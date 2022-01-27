@@ -32,7 +32,6 @@ public class GithubApiService {
     }
 
     public Optional<Capstone> getRepoData(String repoUrl) {
-        System.out.println(repoUrl);
         headers.setBearerAuth(githubToken);
         Optional<GithubRepoDto> optionalGithubRepoDto = getRepoDetails(repoUrl);
 
