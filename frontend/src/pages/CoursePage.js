@@ -18,7 +18,7 @@ export default function CoursePage() {
 
     useEffect(() => {
         loadCapstones(courseId)
-    }, [])
+    }, [courseId, loadCapstones])
 
     const handleLoadCapstoneBy = (id) => {
         setLoading((currentState) => {
