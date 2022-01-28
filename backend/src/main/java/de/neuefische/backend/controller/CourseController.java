@@ -33,14 +33,13 @@ public class CourseController {
         return courseService.getCourseById(id);
     }
 
-
     @GetMapping("/{id}/refresh")
     public Course refreshCourseById(@PathVariable String id) {
         return courseService.refreshCourse(id);
     }
 
     @GetMapping("/{courseId}/capstones/{capstoneId}/refresh")
-    public Capstone refreshCourseCapstoneById(@PathVariable String courseId, @PathVariable String capstoneId) {
-        return courseService.refreshCapstone(courseId, capstoneId);
+    public Capstone refreshCourseCapstoneById(@PathVariable String capstoneId) {
+        return courseService.refreshCapstone(capstoneId);
     }
 }
