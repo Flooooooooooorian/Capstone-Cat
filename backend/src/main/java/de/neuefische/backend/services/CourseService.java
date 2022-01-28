@@ -54,7 +54,7 @@ public class CourseService {
         return course;
     }
 
-    public Capstone refreshCapstone(String courseId, String capstoneId) {
+    public Capstone refreshCapstone(String capstoneId) {
         Optional<Capstone> optionalCapstone = capstoneService.getCapstoneById(capstoneId);
         Capstone capstone = optionalCapstone.orElseThrow(() -> new NoSuchElementException("No Capstone with id: " + capstoneId + " found!"));
         return capstoneService.refreshCapstone(capstone);
