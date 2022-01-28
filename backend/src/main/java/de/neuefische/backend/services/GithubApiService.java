@@ -85,7 +85,7 @@ public class GithubApiService {
             ResponseEntity<GithubRepoDto> repoResponse = restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
             return Optional.ofNullable(repoResponse.getBody());
         } catch (RestClientException ex) {
-            log.warn("Github Repo not found! " + repoUrl, ex);
+            log.warn("Unable to access GitHub Repo: " + repoUrl, ex);
             return Optional.empty();
         }
     }
