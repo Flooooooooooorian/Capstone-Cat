@@ -1,5 +1,6 @@
 package de.neuefische.backend.services;
 
+import de.neuefische.backend.dtos.CapstoneCreationDto;
 import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.repos.CapstoneRepo;
 import org.hamcrest.Matchers;
@@ -65,5 +66,35 @@ class CapstoneServiceTest {
         verify(apiService).getRepoData("githubApi-url-1");
         verify(capstoneRepo).save(expected1);
         assertThat(capstoneDto, Matchers.is(expected1));
+    }
+
+    @Test
+    void addCapstoneTest() {
+        //GIVEN
+        CapstoneCreationDto capstoneCreationDto = CapstoneCreationDto.builder()
+                .name("teset-name")
+                .githubApiUrl("test-url")
+                .build();
+
+        Capstone capstone = Capstone.builder()
+                .studentName("teset-name")
+                .githubApiUrl("test-url")
+                .build();
+
+        Capstone expected = Capstone.builder()
+                .studentName("teset-name")
+                .id("1")
+                .githubApiUrl("test-url")
+                .build();
+
+        when(capstoneRepo.save(capstone)).thenReturn(expected);
+
+        //WHEN
+        Capstone actual = service.addCapstone(capstoneCreationDto);
+
+        //THEN
+
+        verify(capstoneRepo).save(capstone);
+        assertThat(actual, Matchers.is(expected));
     }
 }
