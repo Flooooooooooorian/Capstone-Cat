@@ -14,8 +14,6 @@ export default function CoursePage() {
     const [loading, setLoading] = useState({})
     const {course, loadCapstones, refreshCapstonesById} = useCourse()
 
-    console.log(course)
-
     useEffect(() => {
         loadCapstones(courseId)
     }, [courseId, loadCapstones])
@@ -43,7 +41,6 @@ export default function CoursePage() {
     const renderBadge = (props) => {
         return (
             <img alt={props.formattedValue} src={props.formattedValue} onClick={(event) => {
-                console.log(event)
                 window.open(event.target.src, '_blank')
             }}/>
         )

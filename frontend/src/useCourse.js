@@ -15,7 +15,10 @@ export default function useCourse() {
         return axios.get(`/api/course/${courseId}/capstones/${capstoneId}/refresh`)
             .then(response => response.data)
             .then((data) => {
-                setCourse(data)
+                setCourse((currentState) => {
+                    const newCapstones = currentState.capstones.map((capstone) => capstone.id === capstoneId ? data : capstone)
+                    return {...currentState, capstones: newCapstones}
+                })
             })
             .catch(console.error)
     }
