@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {DataGrid, GridColumns} from '@mui/x-data-grid';
-import useCourse from "../useCourse";
+import useCourse from "../hooks/useCourse";
 import {Typography} from "@mui/material";
 import styled from "styled-components";
 import CachedIcon from '@mui/icons-material/Cached';
@@ -14,8 +14,6 @@ export default function CoursePage() {
 
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({})
   const {course, loadCapstones, refreshCapstonesById} = useCourse()
-
-  console.log(course)
 
   useEffect(() => {
     courseId && loadCapstones(courseId)

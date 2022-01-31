@@ -1,5 +1,7 @@
 package de.neuefische.backend.services;
 
+import de.neuefische.backend.dtos.CapstoneCreationDto;
+import de.neuefische.backend.dtos.CourseCreationDto;
 import de.neuefische.backend.model.Capstone;
 import de.neuefische.backend.model.Course;
 import de.neuefische.backend.repos.CourseRepo;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
@@ -156,7 +159,7 @@ class CourseServiceTest {
         when(repo.save(expected)).thenReturn(expected);
 
         //WHEN
-        Course actual = courseService.getRefreshedCourse(course1.getId());
+        Course actual = courseService.refreshCourse(course1.getId());
 
         //THEN
 
@@ -168,5 +171,66 @@ class CourseServiceTest {
 
     @Test
     void getRefreshedCapstone() {
+
+        //GIVEN
+        Capstone capstone = Capstone.builder()
+                .id("1")
+                .build();
+
+        Capstone refreshedCapstone = Capstone.builder()
+                .id("1")
+                .allCommits(100)
+                .build();
+
+        when(capstoneService.getCapstoneById("1")).thenReturn(Optional.of(capstone));
+        when(capstoneService.refreshCapstone(capstone)).thenReturn(refreshedCapstone);
+
+
+        //WHEN
+
+        Capstone actual = courseService.refreshCapstone("1");
+
+        //THEN
+        assertThat(actual, Matchers.is(refreshedCapstone));
+        verify(capstoneService).getCapstoneById("1");
+        verify(capstoneService).refreshCapstone(capstone);
+    }
+
+    @Test
+    void createCourseTest() {
+        //GIVEN
+        CapstoneCreationDto newCapstone = CapstoneCreationDto.builder()
+                .name("name")
+                .build();
+
+        CourseCreationDto courseCreationDto = CourseCreationDto.builder()
+                .name("test")
+                .capstones(List.of(newCapstone))
+                .build();
+
+        Capstone capstone = Capstone.builder().studentName("name").build();
+
+        Course course = Course.builder()
+                .name("test")
+                .capstones(List.of(capstone))
+                .build();
+
+        Course expected = Course.builder()
+                .name("test")
+                .id("id")
+                .capstones(List.of(capstone))
+                .build();
+
+        when(repo.save(course)).thenReturn(expected);
+        when(capstoneService.addCapstone(newCapstone)).thenReturn(capstone);
+
+        //WHEN
+
+        Course actual = courseService.createCourse(courseCreationDto);
+
+        //THEN
+
+        verify(repo).save(course);
+        assertThat(actual, Matchers.is(expected));
     }
 }
