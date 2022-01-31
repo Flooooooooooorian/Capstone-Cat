@@ -1,132 +1,96 @@
 import React, {useState} from "react";
 import {DataGrid, GridColumns} from '@mui/x-data-grid';
 import {Typography} from "@mui/material";
-import styled from "styled-components";
-import CachedIcon from '@mui/icons-material/Cached';
-import {LoadingButton} from "@mui/lab";
 import {useParams} from "react-router-dom";
 import Course from "../models/Course";
+import RefreshHeader from "../components/CoursePageTable/RefreshHeader";
+import RepoLinkCell from "../components/CoursePageTable/RepoLinkCell";
+import CommitCountCell from "../components/CoursePageTable/CommitCountCell";
+import PullRequestCountCell from "../components/CoursePageTable/PullRequestCountCell";
+import RefreshButtonCell from "../components/CoursePageTable/RefreshButtonCell";
+import BadgeCell from "../components/CoursePageTable/BadgeCell";
+import TextCell from "../components/CoursePageTable/TextCell";
+import TextHeader from "../components/CoursePageTable/TextHeader";
 
 
 export interface CoursePageProps {
-  courses: Course[]
-  refreshCapstoneById: (courseId: string, id: string) => Promise<void>
+    courses: Course[]
+    refreshCapstoneById: (courseId: string, id: string) => Promise<void>
 }
 
-export default function CoursePage({courses, refreshCapstoneById}: CoursePageProps ) {
+export default function CoursePage({courses, refreshCapstoneById}: CoursePageProps) {
 
-  const {courseId} = useParams()
+    const {courseId} = useParams()
+    const [loading, setLoading] = useState<{ [key: string]: boolean }>({})
 
-  const [loading, setLoading] = useState<{ [key: string]: boolean }>({})
-
-  if (!courseId) {
-    return <div>Please enter a course ID</div>
-  }
-
-  const course = courses.find(c => c.id === courseId)
-
-  if (!course) {
-    return <div>Please enter a valid course ID</div>
-  }
-
-  const renderRefreshButton = (props: any) => {
-    return (
-      <LoadingButton loading={loading[props.row.id as string]} variant="outlined" onClick={() => {
-        handleLoadCapstoneBy(props.row.id)
-      }}>
-        <CachedIcon/>
-      </LoadingButton>
-    )
-  }
-
-  const renderRefreshHeader = () => {
-    const handleOnClick = () => {
-      course.capstones.forEach((capstone) => {
-        handleLoadCapstoneBy(capstone.id)
-      })
+    if (!courseId) {
+        return <div>Please enter a course ID</div>
     }
 
-    return (
-      <LoadingButton variant="outlined" onClick={handleOnClick}>
-        <CachedIcon/>
-      </LoadingButton>
-    )
-  }
+    const course = courses.find(c => c.id === courseId)
 
-  const renderCapstoneRepoCell = (props: any) => {
-    return (
-      <RepoLink onClick={(event: React.MouseEvent<HTMLElement>) => {
-        const target = event.target as typeof event.target & { textContent: string }
-        window.open(target.textContent, '_blank')
-      }}>{props.formattedValue}</RepoLink>
-    )
-  }
+    if (!course) {
+        return <div>Please enter a valid course ID</div>
+    }
 
-  const renderBadge = (props: any) => {
-    return (
-      <img alt={props.formattedValue} src={props.formattedValue} onClick={(event) => {
-        const target = event.target as typeof event.target & { src: string }
-        window.open(target.src, '_blank')
-      }}/>
-    )
-  }
 
-  const renderCommits = (props: any) => {
-    return (
-      <Typography>
-        {props.row.mainCommits}({props.row.allCommits})
-      </Typography>
-    )
-  }
 
-  const renderPulls = (props: any) => {
-    return (
-      <Typography>
-        {props.row.openPulls}({props.row.allPulls})
-      </Typography>
-    )
-  }
+    const renderRefreshButton = (props: any) => <RefreshButtonCell id={props.row.id}
+                                                                   refreshCapstoneById={handleRefreshCapstoneById}
+                                                                   loading={loading[props.row.id]}/>
 
-  const handleLoadCapstoneBy = (id: string) => {
-    setLoading((currentState) => {
-      return {...currentState, [id]: true}
-    })
-    refreshCapstoneById(courseId, id)
-      .then(() => {
+    const renderRefreshHeader = () => <RefreshHeader course={course} refreshCapstoneById={handleRefreshCapstoneById}/>
+
+    const renderCapstoneRepoCell = (props: any) => <RepoLinkCell url={props.formattedValue}/>
+
+    const renderBadge = (props: any) => <BadgeCell url={props.formattedValue}/>
+
+    const renderCommits = (props: any) => <CommitCountCell mainCommits={props.row.mainCommits}
+                                                           allCommits={props.row.allCommits}/>
+
+    const renderPulls = (props: any) => <PullRequestCountCell openPullRequests={props.row.openPulls}
+                                                              allPullRequests={props.row.allPulls}/>
+
+    const renderTextCell = (props: any) => <TextCell text={props.row.studentName}/>
+
+    const renderTextHeader = (props: any) => <TextHeader text={props.field} />
+
+    const handleRefreshCapstoneById = (id: string) => {
         setLoading((currentState) => {
-          return {...currentState, [id]: false}
+            return {...currentState, [id]: true}
         })
-      })
-  }
-
-  const columns: GridColumns = [
-    {field: 'studentName', headerName: 'Student', width: 150},
-    {field: 'url', headerName: 'Capstone', width: 150, renderCell: renderCapstoneRepoCell},
-    {field: 'updatedDefaultAt', headerName: 'Last Main Commit', width: 170},
-    {field: 'updatedAt', headerName: 'Last Commit', width: 170},
-    {field: 'mainCommits', headerName: 'Commits', width: 140, renderCell: renderCommits},
-    {field: 'openPulls', headerName: "PR's", width: 140, renderCell: renderPulls},
-    {field: 'coverageBadgeUrl', headerName: 'Coverage', width: 150, renderCell: renderBadge},
-    {field: 'qualityBadgeUrl', headerName: 'Quality Gate', width: 150, renderCell: renderBadge},
-    {
-      field: '',
-      sortable: false,
-      disableColumnMenu: true,
-      renderHeader: renderRefreshHeader,
-      headerName: "",
-      width: 100,
-      renderCell: renderRefreshButton
+        refreshCapstoneById(courseId, id)
+            .then(() => {
+                setLoading((currentState) => {
+                    return {...currentState, [id]: false}
+                })
+            })
     }
-  ];
 
-  return (
-    <div style={{display: "flex", flexDirection: "column", width: '100%', height: 800}}>
-      <Typography variant={"h6"}>{course?.name}</Typography>
-      <DataGrid rows={course?.capstones} columns={columns}/>
-    </div>
-  )
+    const columns: GridColumns = [
+        {field: 'studentName', headerName: 'Student', width: 150, renderCell: renderTextCell, renderHeader: renderTextHeader},
+        {field: 'url', headerName: 'Capstone', width: 150, renderCell: renderCapstoneRepoCell, renderHeader: renderTextHeader},
+        {field: 'updatedDefaultAt', headerName: 'Last Main Commit', width: 170, renderCell: renderTextCell, renderHeader: renderTextHeader},
+        {field: 'updatedAt', headerName: 'Last Commit', width: 170, renderCell: renderTextCell, renderHeader: renderTextHeader},
+        {field: 'mainCommits', headerName: 'Commits', width: 140, renderCell: renderCommits, renderHeader: renderTextHeader},
+        {field: 'openPulls', headerName: "PR's", width: 140, renderCell: renderPulls, renderHeader: renderTextHeader},
+        {field: 'coverageBadgeUrl', headerName: 'Coverage', width: 150, renderCell: renderBadge, renderHeader: renderTextHeader},
+        {field: 'qualityBadgeUrl', headerName: 'Quality Gate', width: 150, renderCell: renderBadge, renderHeader: renderTextHeader},
+        {
+            field: '',
+            sortable: false,
+            disableColumnMenu: true,
+            renderHeader: renderRefreshHeader,
+            headerName: "",
+            width: 100,
+            renderCell: renderRefreshButton
+        }
+    ];
+
+    return (
+        <div style={{display: "flex", flexDirection: "column", width: '100%', height: 800}}>
+            <Typography variant={"h6"}>{course?.name}</Typography>
+            <DataGrid rows={course?.capstones} columns={columns}/>
+        </div>
+    )
 }
-
-const RepoLink = styled(Typography)`
-  text-decoration: blue underline;
-`
