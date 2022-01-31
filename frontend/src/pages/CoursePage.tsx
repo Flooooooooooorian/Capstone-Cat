@@ -1,26 +1,32 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {DataGrid, GridColumns} from '@mui/x-data-grid';
-import useCourse from "../hooks/useCourse";
 import {Typography} from "@mui/material";
 import styled from "styled-components";
 import CachedIcon from '@mui/icons-material/Cached';
 import {LoadingButton} from "@mui/lab";
 import {useParams} from "react-router-dom";
+import Course from "../models/Course";
 
 
-export default function CoursePage() {
+export interface CoursePageProps {
+  courses: Course[]
+  refreshCapstoneById: (courseId: string, id: string) => Promise<void>
+}
+
+export default function CoursePage({courses, refreshCapstoneById}: CoursePageProps ) {
 
   const {courseId} = useParams()
 
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({})
-  const {course, loadCapstones, refreshCapstonesById} = useCourse()
-
-  useEffect(() => {
-    courseId && loadCapstones(courseId)
-  }, [courseId, loadCapstones])
 
   if (!courseId) {
     return <div>Please enter a course ID</div>
+  }
+
+  const course = courses.find(c => c.id === courseId)
+
+  if (!course) {
+    return <div>Please enter a valid course ID</div>
   }
 
   const renderRefreshButton = (props: any) => {
@@ -85,7 +91,7 @@ export default function CoursePage() {
     setLoading((currentState) => {
       return {...currentState, [id]: true}
     })
-    refreshCapstonesById(courseId, id)
+    refreshCapstoneById(courseId, id)
       .then(() => {
         setLoading((currentState) => {
           return {...currentState, [id]: false}

@@ -15,4 +15,4 @@ export default interface Capstone {
   coverageBadgeUrl?: string
 }
 
-export type CapstoneRequest = Pick<Capstone, "githubApiUrl" | "studentName">
+export type CapstoneRequest = Pick<Capstone, "githubApiUrl">
