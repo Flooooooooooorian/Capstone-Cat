@@ -156,7 +156,7 @@ class CourseServiceTest {
         when(repo.save(expected)).thenReturn(expected);
 
         //WHEN
-        Course actual = courseService.getRefreshedCourse(course1.getId());
+        Course actual = courseService.refreshCourse(course1.getId());
 
         //THEN
 

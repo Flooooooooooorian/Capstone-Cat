@@ -22,12 +22,8 @@ public class CourseService {
 
     public Course createCourse(CourseCreationDto courseDto) {
         List<Capstone> capstones = new ArrayList<>();
-        for (CapstoneCreationDto capstone : courseDto.getCapstones()) {
-            capstones.add(Capstone.builder()
-                            .id(UUID.randomUUID().toString())
-                            .githubApiUrl(capstone.getGithubApiUrl())
-                            .studentName(capstone.getName())
-                    .build());
+        for (CapstoneCreationDto capstoneDto : courseDto.getCapstones()) {
+            capstones.add(capstoneService.addCapstone(capstoneDto));
         }
 
         return repo.save(Course.builder()
@@ -44,27 +40,23 @@ public class CourseService {
         return repo.findById(id).orElseThrow(() -> new NoSuchElementException("Course with id: " + id + " does not exists!"));
     }
 
-    public Course getRefreshedCourse(String id) {
+    public Course refreshCourse(String id) {
         Course course = getCourseById(id);
 
-        course.setCapstones(course.getCapstones().stream()
-                .map(capstoneService::refreshCapstone)
-                .toList());
-        return repo.save(course);
+        List<Capstone> refreshedCapstone = new ArrayList<>();
+
+        for (Capstone capstone : course.getCapstones()) {
+            refreshedCapstone.add(capstoneService.refreshCapstone(capstone));
+        }
+
+        course.setCapstones(refreshedCapstone);
+
+        return course;
     }
 
-    public Course getRefreshedCapstone(String courseId, String capstoneId) {
-        Course course = getCourseById(courseId);
-
-        course.setCapstones(course.getCapstones().stream()
-                .map(capstone -> {
-                    if (capstone.getId().equals(capstoneId)) {
-                        return capstoneService.refreshCapstone(capstone);
-                    }
-                    return capstone;
-                })
-                .toList());
-
-        return repo.save(course);
+    public Capstone refreshCapstone(String courseId, String capstoneId) {
+        Optional<Capstone> optionalCapstone = capstoneService.getCapstoneById(capstoneId);
+        Capstone capstone = optionalCapstone.orElseThrow(() -> new NoSuchElementException("No Capstone with id: " + capstoneId + " found!"));
+        return capstoneService.refreshCapstone(capstone);
     }
 }
