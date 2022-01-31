@@ -3,18 +3,21 @@ import {Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Header from "./components/Header";
 import AddCoursePage from "./pages/AddCoursePage";
-import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
+import {createTheme, CssBaseline, PaletteMode, ThemeProvider} from "@mui/material";
 import useCourses from "./hooks/useCourses";
+import {useState} from "react";
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-})
+
 
 function App() {
     const {courses, refreshCapstonesById, addCourse} = useCourses()
+    const [colorMode] = useState<PaletteMode>(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
 
+    const theme = createTheme({
+        palette: {
+            mode: colorMode,
+        },
+    })
 
   return (
     <ThemeProvider theme={theme}>
