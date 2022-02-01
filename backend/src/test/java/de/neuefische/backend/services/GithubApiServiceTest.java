@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -142,13 +144,167 @@ class GithubApiServiceTest {
                     .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
             //WHEN
-            Method compareBranchWithDefault = githubApiService.getClass().getDeclaredMethod("compareBranchWithDefault", String.class, String.class, String.class);
-            compareBranchWithDefault.setAccessible(true);
-            Object result = compareBranchWithDefault.invoke(githubApiService, repoUrl, "main", "feature");
+            Method method = githubApiService.getClass().getDeclaredMethod("compareBranchWithDefault", String.class, String.class, String.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, "main", "feature");
 
             //THEN
             assertThat(result, Matchers.is(Optional.empty()));
             verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void reflectionCompareWithForbidden() {
+        try {
+            //GIVEN
+            String repoUrl = "repo-url";
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            when(restTemplate.exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class))
+                    .thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+            //WHEN
+            Method method = githubApiService.getClass().getDeclaredMethod("compareBranchWithDefault", String.class, String.class, String.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, "main", "feature");
+
+            //THEN
+            assertThat(result, Matchers.is(Optional.empty()));
+            verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void reflectionPullsNoBody() {
+        try {
+            //GIVEN
+            String repoUrl = "repo-url";
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            when(restTemplate.exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullDto[].class))
+                    .thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+            //WHEN
+            Method method = githubApiService.getClass().getDeclaredMethod("getPulls", String.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl);
+
+            //THEN
+            assertThat(result, Matchers.is(new ArrayList<>()));
+            verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullDto[].class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void reflectionWorkflowBadgeNoWorkflows() {
+        try {
+            //GIVEN
+            String repoUrl = "repo-url";
+
+            GithubWorkflowsDto githubWorkflows = GithubWorkflowsDto.builder()
+                    .cout(0)
+                    .workflows(List.of())
+                    .build();
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            when(restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class))
+                    .thenReturn(ResponseEntity.ok(githubWorkflows));
+            //WHEN
+            Method method = githubApiService.getClass().getDeclaredMethod("getWorkflowBadgeUrlIfAny", String.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl);
+
+            //THEN
+            assertThat(result, Matchers.is(Optional.empty()));
+            verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void reflectionWorkflowBadgeNoJavaWorkflowDetected() {
+        try {
+            //GIVEN
+            String repoUrl = "repo-url";
+
+            GithubWorkflowsDto githubWorkflows = GithubWorkflowsDto.builder()
+                    .cout(1)
+                    .workflows(List.of(GithubWorkflowDto.builder()
+                            .name("Deploy workflow")
+                            .badgeUrl("first-badge-url")
+                            .build()))
+                    .build();
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            when(restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class))
+                    .thenReturn(ResponseEntity.ok(githubWorkflows));
+            //WHEN
+            Method method = githubApiService.getClass().getDeclaredMethod("getWorkflowBadgeUrlIfAny", String.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl);
+
+            //THEN
+            assertThat(result, Matchers.is(Optional.of("first-badge-url")));
+            verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void reflectionWorkflowBadgeMavenWorkflowDetected() {
+        try {
+            //GIVEN
+            String repoUrl = "repo-url";
+
+            GithubWorkflowsDto githubWorkflows = GithubWorkflowsDto.builder()
+                    .cout(1)
+                    .workflows(List.of(
+                            GithubWorkflowDto.builder()
+                                    .name("workflow deploy build")
+                                    .badgeUrl("wrong-badge-url")
+                                    .build(),
+                            GithubWorkflowDto.builder()
+                                    .name("workflow maven build")
+                                    .badgeUrl("java-badge-url")
+                                    .build()
+                    ))
+                    .build();
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            when(restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class))
+                    .thenReturn(ResponseEntity.ok(githubWorkflows));
+            //WHEN
+            Method method = githubApiService.getClass().getDeclaredMethod("getWorkflowBadgeUrlIfAny", String.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl);
+
+            //THEN
+            assertThat(result, Matchers.is(Optional.of("java-badge-url")));
+            verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
 
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
