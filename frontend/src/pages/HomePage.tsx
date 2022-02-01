@@ -1,24 +1,18 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import CourseListItem from "../components/CourseListItem";
-import axios from "axios";
 import {Button, Card, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
 import Course from "../models/Course";
 
-export default function HomePage() {
 
-  const [courses, setCourses] = useState<Course[]>([])
+export interface HomePageProps {
+    courses: Course[]
+}
+
+export default function HomePage({courses}: HomePageProps) {
+
   const navigation = useNavigate()
-
-  useEffect(
-    () => {
-      axios.get("/api/course")
-        .then(response => response.data)
-        .then(setCourses)
-        .catch(console.error)
-    }, []
-  )
 
   return (
     <StyledCard>

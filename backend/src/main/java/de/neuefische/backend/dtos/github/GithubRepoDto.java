@@ -21,6 +21,6 @@ public class GithubRepoDto {
     @JsonProperty("html_url")
     private String url;
 
-    @JsonProperty("updated_at")
+    @JsonProperty("pushed_at")
     private LocalDateTime updatedAt;
 }
