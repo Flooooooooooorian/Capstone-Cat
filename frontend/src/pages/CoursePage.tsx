@@ -51,7 +51,11 @@ export default function CoursePage({courses, refreshCapstoneById}: CoursePagePro
     const renderPulls = (props: any) => <PullRequestCountCell openPullRequests={props.row.openPulls}
                                                               allPullRequests={props.row.allPulls}/>
 
-    const renderTextCell = (props: any) => <TextCell text={props.row.studentName}/>
+    const renderStudentName = (props: any) => <TextCell text={props.row.studentName}/>
+
+    const renderUpdatedDefault = (props: any) => <TextCell text={props.row.updatedDefaultAt}/>
+
+    const renderUpdatedAll = (props: any) => <TextCell text={props.row.updatedAt}/>
 
     const renderTextHeader = (props: any) => <TextHeader text={props.field} />
 
@@ -68,10 +72,10 @@ export default function CoursePage({courses, refreshCapstoneById}: CoursePagePro
     }
 
     const columns: GridColumns = [
-        {field: 'studentName', headerName: 'Student', width: 150, renderCell: renderTextCell, renderHeader: renderTextHeader},
+        {field: 'studentName', headerName: 'Student', width: 150, renderCell: renderStudentName, renderHeader: renderTextHeader},
         {field: 'url', headerName: 'Capstone', width: 150, renderCell: renderCapstoneRepoCell, renderHeader: renderTextHeader},
-        {field: 'updatedDefaultAt', headerName: 'Last Main Commit', width: 170, renderCell: renderTextCell, renderHeader: renderTextHeader},
-        {field: 'updatedAt', headerName: 'Last Commit', width: 170, renderCell: renderTextCell, renderHeader: renderTextHeader},
+        {field: 'updatedDefaultAt', headerName: 'Last Main Commit', width: 170, renderCell: renderUpdatedDefault, renderHeader: renderTextHeader},
+        {field: 'updatedAt', headerName: 'Last Commit', width: 170, renderCell: renderUpdatedAll, renderHeader: renderTextHeader},
         {field: 'mainCommits', headerName: 'Commits', width: 140, renderCell: renderCommits, renderHeader: renderTextHeader},
         {field: 'openPulls', headerName: "PR's", width: 140, renderCell: renderPulls, renderHeader: renderTextHeader},
         {field: 'coverageBadgeUrl', headerName: 'Coverage', width: 150, renderCell: renderBadge, renderHeader: renderTextHeader},
