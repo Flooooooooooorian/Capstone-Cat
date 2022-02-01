@@ -55,6 +55,18 @@ class GithubApiServiceTest {
         GithubDetailedCommitDto detailedCommitDto = new GithubDetailedCommitDto(new GithubCommitterDto(date));
         GithubCommitDto commitDto = new GithubCommitDto(detailedCommitDto);
 
+        GithubWorkflowsDto githubWorkflows = GithubWorkflowsDto.builder()
+                .cout(2)
+                .workflows(List.of(GithubWorkflowDto.builder()
+                                .name("deploy")
+                                .badgeUrl("wrong workflow")
+                                .build(),
+                        GithubWorkflowDto.builder()
+                                .name("Java")
+                                .badgeUrl("workflow-badge-url")
+                                .build()))
+                .build();
+
         when(restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class))
                 .thenReturn(ResponseEntity.ok(repoDto));
         when(restTemplate.exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class))
@@ -67,7 +79,8 @@ class GithubApiServiceTest {
                 .thenReturn(ResponseEntity.ok(new GithubCompareDto(5, "feature", List.of(commitDto))));
         when(restTemplate.exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class))
                 .thenReturn(ResponseEntity.ok(pullDtos));
-
+        when(restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class))
+                .thenReturn(ResponseEntity.ok(githubWorkflows));
         //WHEN
 
         Optional<Capstone> optionalCapstone = githubApiService.getRepoData(repoUrl);
@@ -85,6 +98,7 @@ class GithubApiServiceTest {
         assertThat(capstoneDto.getStudentName(), Matchers.is("me"));
         assertThat(capstoneDto.getUpdatedAt(), Matchers.is(date));
         assertThat(capstoneDto.getUrl(), Matchers.is("url"));
+        assertThat(capstoneDto.getWorkflowBadgeUrl(), Matchers.is("workflow-badge-url"));
 
         verify(restTemplate).exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
         verify(restTemplate).exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class);
@@ -92,6 +106,7 @@ class GithubApiServiceTest {
         verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
         verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
         verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
+        verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
     }
 
     @Test
