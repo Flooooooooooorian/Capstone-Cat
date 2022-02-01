@@ -143,8 +143,10 @@ public class GithubApiService {
 
     private Optional<String> getWorkflowBadgeUrlIfAny(String repoUrl) {
         ResponseEntity<GithubWorkflowsDto> workflowsResponse = restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
-        if (workflowsResponse.getBody() != null) {
-            List<GithubWorkflowDto> workflows = workflowsResponse.getBody().getWorkflows();
+        GithubWorkflowsDto body = workflowsResponse.getBody();
+        if (body != null) {
+            List<GithubWorkflowDto> workflows = body.getWorkflows();
+
             for (GithubWorkflowDto workflow : workflows) {
                 if (workflow.getName().toLowerCase().contains("java") || workflow.getName().toLowerCase().contains("maven")) {
                     return Optional.of(workflow.getBadgeUrl());
