@@ -8,19 +8,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 class GithubApiServiceTest {
@@ -119,5 +119,32 @@ class GithubApiServiceTest {
         //THEN
 
         assertThat(capstoneDto.isEmpty(), Matchers.is(true));
+    }
+
+
+    @Test
+    void reflectionCompareWithNullBody() {
+        try {
+            //GIVEN
+            String repoUrl = "repo-url";
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            when(restTemplate.exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class))
+                    .thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+            //WHEN
+            Method compareBranchWithDefault = githubApiService.getClass().getDeclaredMethod("compareBranchWithDefault", String.class, String.class, String.class);
+            compareBranchWithDefault.setAccessible(true);
+            Object result = compareBranchWithDefault.invoke(githubApiService, repoUrl, "main", "feature");
+
+            //THEN
+            assertThat(result, Matchers.is(Optional.empty()));
+            verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 }
