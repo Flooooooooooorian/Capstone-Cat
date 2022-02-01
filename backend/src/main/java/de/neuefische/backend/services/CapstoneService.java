@@ -42,6 +42,7 @@ public class CapstoneService {
         capstone.setOpenPulls(refreshedCapstone.getOpenPulls());
         capstone.setUpdatedAt(refreshedCapstone.getUpdatedAt());
         capstone.setUpdatedDefaultAt(refreshedCapstone.getUpdatedDefaultAt());
+        capstone.setWorkflowBadgeUrl(refreshedCapstone.getWorkflowBadgeUrl());
         return capstoneRepo.save(capstone);
     }
 

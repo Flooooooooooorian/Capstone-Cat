@@ -68,6 +68,8 @@ public class GithubApiService {
 
         int openPulls = Math.toIntExact(allPulls.stream().filter(githubPullDto -> "open".equals(githubPullDto.getState())).count());
 
+        Optional<String> workflowBadgeUrl = getWorkflowBadgeUrlIfAny(repoUrl);
+
         return Optional.of(Capstone.builder()
                 .studentName(repoDto.getOwner().getName())
                 .allCommits(commitsAhead + mainCommits)
@@ -77,6 +79,7 @@ public class GithubApiService {
                 .url(repoDto.getUrl())
                 .updatedAt(mostRecentCommitDate != null ? mostRecentCommitDate : repoDto.getUpdatedAt())
                 .updatedDefaultAt(repoDto.getUpdatedAt())
+                .workflowBadgeUrl(workflowBadgeUrl.orElse(""))
                 .build());
     }
 
@@ -114,7 +117,7 @@ public class GithubApiService {
     private Optional<GithubCompareDto> compareBranchWithDefault(String repoUrl, String defaultBranch, String branch) {
         String url = repoUrl + "/compare/" + defaultBranch + "..." + branch;
         try {
-            ResponseEntity<GithubCompareDto> compareResponse = restTemplate.exchange(url , HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
+            ResponseEntity<GithubCompareDto> compareResponse = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
             GithubCompareDto compareDto = compareResponse.getBody();
             if (compareDto != null) {
                 compareDto.setBranchName(branch);
@@ -136,5 +139,22 @@ public class GithubApiService {
             log.debug("No Pulls! " + repoUrl);
             return new ArrayList<>();
         }
+    }
+
+    private Optional<String> getWorkflowBadgeUrlIfAny(String repoUrl) {
+        ResponseEntity<GithubWorkflowsDto> workflowsResponse = restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
+        if (workflowsResponse.getBody() != null) {
+            List<GithubWorkflowDto> workflows = workflowsResponse.getBody().getWorkflows();
+            for (GithubWorkflowDto workflow : workflows) {
+                if (workflow.getName().toLowerCase().contains("java") || workflow.getName().toLowerCase().contains("maven")) {
+                    return Optional.of(workflow.getBadgeUrl());
+                }
+            }
+            if (!workflows.isEmpty()) {
+                return Optional.ofNullable(workflows.get(0).getBadgeUrl());
+            }
+        }
+
+        return Optional.empty();
     }
 }

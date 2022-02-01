@@ -13,6 +13,8 @@ export default interface Capstone {
 
   qualityBadgeUrl?: string
   coverageBadgeUrl?: string
+
+  workflowBadgeUrl?: string
 }
 
 export type CapstoneRequest = Pick<Capstone, "githubApiUrl">
