@@ -29,4 +29,6 @@ public class Capstone {
     private int mainCommits;
     private int allPulls;
     private int openPulls;
+
+    private String workflowBadgeUrl;
 }

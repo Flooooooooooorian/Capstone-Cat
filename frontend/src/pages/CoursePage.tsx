@@ -78,6 +78,7 @@ export default function CoursePage({courses, refreshCapstoneById}: CoursePagePro
         {field: 'updatedAt', headerName: 'Last Commit', width: 170, renderCell: renderUpdatedAll, renderHeader: renderTextHeader},
         {field: 'mainCommits', headerName: 'Commits', width: 140, renderCell: renderCommits, renderHeader: renderTextHeader},
         {field: 'openPulls', headerName: "PR's", width: 140, renderCell: renderPulls, renderHeader: renderTextHeader},
+        {field: 'workflowBadgeUrl', headerName: 'Gihtub Workflow', width: 200, renderCell: renderBadge, renderHeader: renderTextHeader},
         {field: 'coverageBadgeUrl', headerName: 'Coverage', width: 150, renderCell: renderBadge, renderHeader: renderTextHeader},
         {field: 'qualityBadgeUrl', headerName: 'Quality Gate', width: 150, renderCell: renderBadge, renderHeader: renderTextHeader},
         {
