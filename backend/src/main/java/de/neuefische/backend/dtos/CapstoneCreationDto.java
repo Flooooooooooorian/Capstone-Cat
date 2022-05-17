@@ -14,5 +14,5 @@ import java.util.UUID;
 public class CapstoneCreationDto {
     private String id = UUID.randomUUID().toString();
     private String name;
-    private String githubApiUrl;
+    private String githubRepoUrl;
 }

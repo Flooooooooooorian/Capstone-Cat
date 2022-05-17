@@ -19,8 +19,13 @@ public class CapstoneService {
     }
 
     public Capstone addCapstone(CapstoneCreationDto capstoneCreationDto) {
+        String githubApiUrl = capstoneCreationDto.getGithubRepoUrl();
+        if (!capstoneCreationDto.getGithubRepoUrl().contains("api")) {
+            githubApiUrl = capstoneCreationDto.getGithubRepoUrl().replace("github.com/", "api.github.com/repos/");
+        }
+
         return capstoneRepo.save(Capstone.builder()
-                .githubApiUrl(capstoneCreationDto.getGithubApiUrl())
+                .githubApiUrl(githubApiUrl)
                 .studentName(capstoneCreationDto.getName())
                 .build());
     }
