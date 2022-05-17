@@ -21,7 +21,7 @@ export interface AddCoursePageProps {
 
 export default function AddCoursePage({addCourse}: AddCoursePageProps) {
     const [courseName, setCourseName] = useState("")
-    const [capstones, setCapstones] = useState<CapstoneRequest[]>([{githubApiUrl: ""}])
+    const [capstones, setCapstones] = useState<CapstoneRequest[]>([{githubRepoUrl: ""}])
     const [showError, setShowError] = useState<boolean>(false)
 
     const navigate = useNavigate()
@@ -37,11 +37,11 @@ export default function AddCoursePage({addCourse}: AddCoursePageProps) {
     }
 
     const addCapstoneRow = () => {
-        setCapstones((currentState) => [...currentState, {githubApiUrl: ""}])
+        setCapstones((currentState) => [...currentState, {githubRepoUrl: ""}])
     }
 
     const onCapstoneChange = (url: string, index: number) => {
-        setCapstones((currents) => currents.map((item, i) => i === index ? {githubApiUrl: url} : item))
+        setCapstones((currents) => currents.map((item, i) => i === index ? {githubRepoUrl: url} : item))
     }
 
     const removeCapstone = (index: number) => {

@@ -17,4 +17,6 @@ export default interface Capstone {
   workflowBadgeUrl?: string
 }
 
-export type CapstoneRequest = Pick<Capstone, "githubApiUrl">
+export type CapstoneRequest = {
+  githubRepoUrl: string
+}
