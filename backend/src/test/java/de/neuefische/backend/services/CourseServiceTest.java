@@ -201,6 +201,7 @@ class CourseServiceTest {
         //GIVEN
         CapstoneCreationDto newCapstone = CapstoneCreationDto.builder()
                 .name("name")
+                .githubRepoUrl("github.com/test")
                 .build();
 
         CourseCreationDto courseCreationDto = CourseCreationDto.builder()
@@ -208,7 +209,10 @@ class CourseServiceTest {
                 .capstones(List.of(newCapstone))
                 .build();
 
-        Capstone capstone = Capstone.builder().studentName("name").build();
+        Capstone capstone = Capstone.builder()
+                .githubApiUrl("api.github.com/repos/test")
+                .studentName("name")
+                .build();
 
         Course course = Course.builder()
                 .name("test")

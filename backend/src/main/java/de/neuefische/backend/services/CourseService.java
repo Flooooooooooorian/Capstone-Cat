@@ -23,7 +23,9 @@ public class CourseService {
     public Course createCourse(CourseCreationDto courseDto) {
         List<Capstone> capstones = new ArrayList<>();
         for (CapstoneCreationDto capstoneDto : courseDto.getCapstones()) {
-            capstones.add(capstoneService.addCapstone(capstoneDto));
+            if (capstoneDto.getGithubRepoUrl() != null) {
+                capstones.add(capstoneService.addCapstone(capstoneDto));
+            }
         }
 
         return repo.save(Course.builder()
