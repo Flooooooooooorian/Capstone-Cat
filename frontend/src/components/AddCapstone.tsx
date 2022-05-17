@@ -15,7 +15,7 @@ export default function AddCapstone({capstone, onChange, remove, index}: AddCaps
     return (
         <Wrapper>
             <Typography>{index+1}.</Typography>
-            <input type={"text"} placeholder={"Github Api Url"} value={capstone.githubApiUrl}
+            <input type={"text"} placeholder={"Github Repository Url"} value={capstone.githubApiUrl}
                    onChange={(event => onChange(event.target.value, index))}/>
             <IconButton onClick={() => remove(index)}>
                 <DeleteIcon/>

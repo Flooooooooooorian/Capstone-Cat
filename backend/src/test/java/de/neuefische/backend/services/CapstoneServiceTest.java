@@ -69,22 +69,52 @@ class CapstoneServiceTest {
     }
 
     @Test
-    void addCapstoneTest() {
+    void addCapstoneTestRepoUrl() {
         //GIVEN
         CapstoneCreationDto capstoneCreationDto = CapstoneCreationDto.builder()
                 .name("teset-name")
-                .githubApiUrl("test-url")
+                .githubRepoUrl("github.com/test-url")
                 .build();
 
         Capstone capstone = Capstone.builder()
                 .studentName("teset-name")
-                .githubApiUrl("test-url")
+                .githubApiUrl("api.github.com/repos/test-url")
                 .build();
 
         Capstone expected = Capstone.builder()
                 .studentName("teset-name")
                 .id("1")
-                .githubApiUrl("test-url")
+                .githubApiUrl("api.github.com/repos/test-url")
+                .build();
+
+        when(capstoneRepo.save(capstone)).thenReturn(expected);
+
+        //WHEN
+        Capstone actual = service.addCapstone(capstoneCreationDto);
+
+        //THEN
+
+        verify(capstoneRepo).save(capstone);
+        assertThat(actual, Matchers.is(expected));
+    }
+
+    @Test
+    void addCapstoneTestApiUrl() {
+        //GIVEN
+        CapstoneCreationDto capstoneCreationDto = CapstoneCreationDto.builder()
+                .name("teset-name")
+                .githubRepoUrl("api.github.com/repos/test-url")
+                .build();
+
+        Capstone capstone = Capstone.builder()
+                .studentName("teset-name")
+                .githubApiUrl("api.github.com/repos/test-url")
+                .build();
+
+        Capstone expected = Capstone.builder()
+                .studentName("teset-name")
+                .id("1")
+                .githubApiUrl("api.github.com/repos/test-url")
                 .build();
 
         when(capstoneRepo.save(capstone)).thenReturn(expected);
