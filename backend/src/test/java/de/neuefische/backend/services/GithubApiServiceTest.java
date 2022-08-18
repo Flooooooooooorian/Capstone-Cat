@@ -147,6 +147,8 @@ class GithubApiServiceTest {
         assertThat(capstoneDto.getUpdatedAt(), Matchers.is(date));
         assertThat(capstoneDto.getUrl(), Matchers.is("url"));
         assertThat(capstoneDto.getWorkflowBadgeUrl(), Matchers.is("workflow-badge-url"));
+        assertThat(capstoneDto.getCoverageBadgeUrl(), Matchers.is("https://sonarcloud.io/api/project_badges/measure?project=user_app-backend&metric=coverage"));
+        assertThat(capstoneDto.getQualityBadgeUrl(), Matchers.is("https://sonarcloud.io/api/project_badges/measure?project=user_app-backend&metric=alert_status"));
 
         verify(restTemplate).exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
         verify(restTemplate).exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class);
@@ -155,6 +157,8 @@ class GithubApiServiceTest {
         verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
         verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
         verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
+        verify(restTemplate).exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class);
+        verify(restTemplate).exchange(repoUrl + "/issues/2/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class);
     }
 
     @Test
@@ -356,6 +360,141 @@ class GithubApiServiceTest {
             //THEN
             assertThat(result, Matchers.is(Optional.of("java-badge-url")));
             verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getRepoDataWithoutPullComments() {
+        try {
+            //GIVEN
+            String repoUrl = "github.com/repo";
+
+            List<GithubPullDto> pullDtos = List.of();
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            //WHEN
+
+            Method method = githubApiService.getClass().getDeclaredMethod("getSonarProjectIdFromPullByComments", String.class, List.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, pullDtos);
+
+            //THEN
+
+            assertThat(result, Matchers.is(Optional.empty()));
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getRepoDataWithNoMatches() {
+        try {
+
+            //GIVEN
+            String repoUrl = "github.com/repo";
+
+            List<GithubPullDto> pullDtos = List.of(new GithubPullDto("open", 1));
+
+            GithubPullComment[] githubPull1Comments = {
+                    GithubPullComment.builder()
+                            .body("bla")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("NOTsonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("bla")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("bla")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build()
+            };
+
+            when(restTemplate.exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class))
+                    .thenReturn(ResponseEntity.ok(githubPull1Comments));
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            //WHEN
+
+            Method method = githubApiService.getClass().getDeclaredMethod("getSonarProjectIdFromPullByComments", String.class, List.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, pullDtos);
+
+            //THEN
+
+            assertThat(result, Matchers.is(Optional.empty()));
+
+            verify(restTemplate).exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getRepoDataWithFrontendMatch() {
+        try {
+
+            //GIVEN
+            String repoUrl = "github.com/repo";
+
+            List<GithubPullDto> pullDtos = List.of(new GithubPullDto("open", 1));
+
+            GithubPullComment[] githubPull1Comments = {
+                    GithubPullComment.builder()
+                            .body("dashboard?id=test-frontend&pullRequest")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("NOTsonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("dashboard?id=test-frontend&pullRequest")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("dashboard?id=test&pullRequest")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build()
+            };
+
+            when(restTemplate.exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class))
+                    .thenReturn(ResponseEntity.ok(githubPull1Comments));
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            //WHEN
+
+            Method method = githubApiService.getClass().getDeclaredMethod("getSonarProjectIdFromPullByComments", String.class, List.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, pullDtos);
+
+            //THEN
+
+            assertThat(result, Matchers.is(Optional.of("test")));
+
+            verify(restTemplate).exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class);
 
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                  InvocationTargetException e) {
