@@ -36,6 +36,8 @@ class CapstoneServiceTest {
                 .mainCommits(13)
                 .allCommits(14)
                 .studentName("name1")
+                .coverageBadgeUrl("coverage-url-1")
+                .qualityBadgeUrl("badge-url-1")
                 .updatedAt(date)
                 .url("url1")
                 .build();
