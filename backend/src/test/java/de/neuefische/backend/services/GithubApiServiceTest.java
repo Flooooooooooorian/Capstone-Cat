@@ -51,7 +51,7 @@ class GithubApiServiceTest {
         GithubCommitDto[] commit100Dtos = new GithubCommitDto[100];
         GithubCommitDto[] commit50Dtos = new GithubCommitDto[1];
 
-        GithubPullDto[] pullDtos = new GithubPullDto[]{new GithubPullDto("open"), new GithubPullDto("closed")};
+        GithubPullDto[] pullDtos = new GithubPullDto[]{new GithubPullDto("open", 1), new GithubPullDto("closed", 2)};
 
 
         GithubDetailedCommitDto detailedCommitDto = new GithubDetailedCommitDto(new GithubCommitterDto(date));
@@ -69,6 +69,48 @@ class GithubApiServiceTest {
                                 .build()))
                 .build();
 
+        GithubPullComment[] githubPull1Comments = {
+                GithubPullComment.builder()
+                        .body("**user_app-backend**] Kudos, SonarCloud Quality Gate passed!&nbsp; &nbsp; [![Quality Gate passed](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/QualityGateBadge/passed-16px.png 'Quality Gate passed')](https://sonarcloud.io/dashboard?id=wrong-user_app-backend&pullRequest=1)\\n\\n[![Bug](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/bug-16px.png 'Bug')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [0 Bugs](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG)  \\n[![Vulnerability](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/vulnerability-16px.png 'Vulnerability')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [0 Vulnerabilities](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY)  \\n[![Security Hotspot](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/security_hotspot-16px.png 'Security Hotspot')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [0 Security Hotspots](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT)  \\n[![Code Smell](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/code_smell-16px.png 'Code Smell')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [0 Code Smells](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL)\\n\\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/CoverageChart/0-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list) [0.0% Coverage](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list)  \\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/Duplications/3-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list) [0.0% Duplication](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list)\\n\\n")
+                        .user(GithubPullCommentUser.builder()
+                                .login("NOTsonarcloud[bot]")
+                                .build())
+                        .build(),
+                GithubPullComment.builder()
+                        .body("**user_app-frontend**] Kudos, SonarCloud Quality Gate passed!&nbsp; &nbsp; [![Quality Gate passed](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/QualityGateBadge/passed-16px.png 'Quality Gate passed')](https://sonarcloud.io/dashboard?id=user_app-frontend&pullRequest=1)\\n\\n[![Bug](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/bug-16px.png 'Bug')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=BUG) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=BUG) [0 Bugs](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=BUG)  \\n[![Vulnerability](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/vulnerability-16px.png 'Vulnerability')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=VULNERABILITY) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=VULNERABILITY) [0 Vulnerabilities](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=VULNERABILITY)  \\n[![Security Hotspot](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/security_hotspot-16px.png 'Security Hotspot')](https://sonarcloud.io/project/security_hotspots?id=user_app-frontend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/security_hotspots?id=user_app-frontend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [0 Security Hotspots](https://sonarcloud.io/project/security_hotspots?id=user_app-frontend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT)  \\n[![Code Smell](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/code_smell-16px.png 'Code Smell')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=CODE_SMELL) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=CODE_SMELL) [0 Code Smells](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=CODE_SMELL)\\n\\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/CoverageChart/0-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_coverage&view=list) [0.0% Coverage](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_coverage&view=list)  \\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/Duplications/3-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_duplicated_lines_density&view=list) [0.0% Duplication](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_duplicated_lines_density&view=list)\\n\\n")
+                        .user(GithubPullCommentUser.builder()
+                                .login("sonarcloud[bot]")
+                                .build())
+                        .build(),
+                GithubPullComment.builder()
+                        .body("**user_app-backend**] Kudos, SonarCloud Quality Gate passed!&nbsp; &nbsp; [![Quality Gate passed](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/QualityGateBadge/passed-16px.png 'Quality Gate passed')](https://sonarcloud.io/dashboard?id=user_app-backend&pullRequest=1)\\n\\n[![Bug](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/bug-16px.png 'Bug')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [0 Bugs](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG)  \\n[![Vulnerability](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/vulnerability-16px.png 'Vulnerability')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [0 Vulnerabilities](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY)  \\n[![Security Hotspot](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/security_hotspot-16px.png 'Security Hotspot')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [0 Security Hotspots](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT)  \\n[![Code Smell](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/code_smell-16px.png 'Code Smell')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [0 Code Smells](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL)\\n\\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/CoverageChart/0-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list) [0.0% Coverage](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list)  \\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/Duplications/3-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list) [0.0% Duplication](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list)\\n\\n")
+                        .user(GithubPullCommentUser.builder()
+                                .login("sonarcloud[bot]")
+                                .build())
+                        .build()
+        };
+
+        GithubPullComment[] githubPull2Comments = {
+                GithubPullComment.builder()
+                        .body("**user_app-backend**] Kudos, SonarCloud Quality Gate passed!&nbsp; &nbsp; [![Quality Gate passed](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/QualityGateBadge/passed-16px.png 'Quality Gate passed')](https://sonarcloud.io/dashboard?id=wrong-user_app-backend&pullRequest=1)\\n\\n[![Bug](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/bug-16px.png 'Bug')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [0 Bugs](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG)  \\n[![Vulnerability](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/vulnerability-16px.png 'Vulnerability')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [0 Vulnerabilities](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY)  \\n[![Security Hotspot](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/security_hotspot-16px.png 'Security Hotspot')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [0 Security Hotspots](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT)  \\n[![Code Smell](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/code_smell-16px.png 'Code Smell')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [0 Code Smells](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL)\\n\\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/CoverageChart/0-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list) [0.0% Coverage](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list)  \\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/Duplications/3-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list) [0.0% Duplication](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list)\\n\\n")
+                        .user(GithubPullCommentUser.builder()
+                                .login("NOTsonarcloud[bot]")
+                                .build())
+                        .build(),
+                GithubPullComment.builder()
+                        .body("**user_app-frontend**] Kudos, SonarCloud Quality Gate passed!&nbsp; &nbsp; [![Quality Gate passed](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/QualityGateBadge/passed-16px.png 'Quality Gate passed')](https://sonarcloud.io/dashboard?id=user_app-frontend&pullRequest=1)\\n\\n[![Bug](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/bug-16px.png 'Bug')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=BUG) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=BUG) [0 Bugs](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=BUG)  \\n[![Vulnerability](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/vulnerability-16px.png 'Vulnerability')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=VULNERABILITY) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=VULNERABILITY) [0 Vulnerabilities](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=VULNERABILITY)  \\n[![Security Hotspot](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/security_hotspot-16px.png 'Security Hotspot')](https://sonarcloud.io/project/security_hotspots?id=user_app-frontend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/security_hotspots?id=user_app-frontend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [0 Security Hotspots](https://sonarcloud.io/project/security_hotspots?id=user_app-frontend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT)  \\n[![Code Smell](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/code_smell-16px.png 'Code Smell')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=CODE_SMELL) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=CODE_SMELL) [0 Code Smells](https://sonarcloud.io/project/issues?id=user_app-frontend&pullRequest=1&resolved=false&types=CODE_SMELL)\\n\\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/CoverageChart/0-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_coverage&view=list) [0.0% Coverage](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_coverage&view=list)  \\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/Duplications/3-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_duplicated_lines_density&view=list) [0.0% Duplication](https://sonarcloud.io/component_measures?id=user_app-frontend&pullRequest=1&metric=new_duplicated_lines_density&view=list)\\n\\n")
+                        .user(GithubPullCommentUser.builder()
+                                .login("sonarcloud[bot]")
+                                .build())
+                        .build(),
+                GithubPullComment.builder()
+                        .body("**user_app-backend**] Kudos, SonarCloud Quality Gate passed!&nbsp; &nbsp; [![Quality Gate passed](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/QualityGateBadge/passed-16px.png 'Quality Gate passed')](https://sonarcloud.io/dashboard?id=user_app-backend&pullRequest=1)\\n\\n[![Bug](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/bug-16px.png 'Bug')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG) [0 Bugs](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=BUG)  \\n[![Vulnerability](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/vulnerability-16px.png 'Vulnerability')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY) [0 Vulnerabilities](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=VULNERABILITY)  \\n[![Security Hotspot](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/security_hotspot-16px.png 'Security Hotspot')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT) [0 Security Hotspots](https://sonarcloud.io/project/security_hotspots?id=user_app-backend&pullRequest=1&resolved=false&types=SECURITY_HOTSPOT)  \\n[![Code Smell](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/common/code_smell-16px.png 'Code Smell')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [![A](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/RatingBadge/A-16px.png 'A')](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL) [0 Code Smells](https://sonarcloud.io/project/issues?id=user_app-backend&pullRequest=1&resolved=false&types=CODE_SMELL)\\n\\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/CoverageChart/0-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list) [0.0% Coverage](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_coverage&view=list)  \\n[![0.0%](https://sonarsource.github.io/sonarcloud-github-static-resources/v2/checks/Duplications/3-16px.png '0.0%')](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list) [0.0% Duplication](https://sonarcloud.io/component_measures?id=user_app-backend&pullRequest=1&metric=new_duplicated_lines_density&view=list)\\n\\n")
+                        .user(GithubPullCommentUser.builder()
+                                .login("sonarcloud[bot]")
+                                .build())
+                        .build()
+        };
+
         when(restTemplate.exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class))
                 .thenReturn(ResponseEntity.ok(repoDto));
         when(restTemplate.exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class))
@@ -83,6 +125,10 @@ class GithubApiServiceTest {
                 .thenReturn(ResponseEntity.ok(pullDtos));
         when(restTemplate.exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class))
                 .thenReturn(ResponseEntity.ok(githubWorkflows));
+        when(restTemplate.exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class))
+                .thenReturn(ResponseEntity.ok(githubPull1Comments));
+        when(restTemplate.exchange(repoUrl + "/issues/2/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class))
+                .thenReturn(ResponseEntity.ok(githubPull2Comments));
         //WHEN
 
         Optional<Capstone> optionalCapstone = githubApiService.getRepoData(repoUrl);
@@ -101,6 +147,8 @@ class GithubApiServiceTest {
         assertThat(capstoneDto.getUpdatedAt(), Matchers.is(date));
         assertThat(capstoneDto.getUrl(), Matchers.is("url"));
         assertThat(capstoneDto.getWorkflowBadgeUrl(), Matchers.is("workflow-badge-url"));
+        assertThat(capstoneDto.getCoverageBadgeUrl(), Matchers.is("https://sonarcloud.io/api/project_badges/measure?project=user_app-backend&metric=coverage"));
+        assertThat(capstoneDto.getQualityBadgeUrl(), Matchers.is("https://sonarcloud.io/api/project_badges/measure?project=user_app-backend&metric=alert_status"));
 
         verify(restTemplate).exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
         verify(restTemplate).exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class);
@@ -109,6 +157,8 @@ class GithubApiServiceTest {
         verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
         verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
         verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
+        verify(restTemplate).exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class);
+        verify(restTemplate).exchange(repoUrl + "/issues/2/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class);
     }
 
     @Test
@@ -152,7 +202,8 @@ class GithubApiServiceTest {
             assertThat(result, Matchers.is(Optional.empty()));
             verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             fail();
         }
@@ -178,7 +229,8 @@ class GithubApiServiceTest {
             assertThat(result, Matchers.is(Optional.empty()));
             verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubCompareDto.class);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             fail();
         }
@@ -204,7 +256,8 @@ class GithubApiServiceTest {
             assertThat(result, Matchers.is(new ArrayList<>()));
             verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullDto[].class);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             fail();
         }
@@ -234,7 +287,8 @@ class GithubApiServiceTest {
             assertThat(result, Matchers.is(Optional.empty()));
             verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             fail();
         }
@@ -267,7 +321,8 @@ class GithubApiServiceTest {
             assertThat(result, Matchers.is(Optional.of("first-badge-url")));
             verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             fail();
         }
@@ -306,7 +361,143 @@ class GithubApiServiceTest {
             assertThat(result, Matchers.is(Optional.of("java-badge-url")));
             verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubWorkflowsDto.class);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getRepoDataWithoutPullComments() {
+        try {
+            //GIVEN
+            String repoUrl = "github.com/repo";
+
+            List<GithubPullDto> pullDtos = List.of();
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            //WHEN
+
+            Method method = githubApiService.getClass().getDeclaredMethod("getSonarProjectIdFromPullByComments", String.class, List.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, pullDtos);
+
+            //THEN
+
+            assertThat(result, Matchers.is(Optional.empty()));
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getRepoDataWithNoMatches() {
+        try {
+
+            //GIVEN
+            String repoUrl = "github.com/repo";
+
+            List<GithubPullDto> pullDtos = List.of(new GithubPullDto("open", 1));
+
+            GithubPullComment[] githubPull1Comments = {
+                    GithubPullComment.builder()
+                            .body("bla")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("NOTsonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("bla")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("bla")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build()
+            };
+
+            when(restTemplate.exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class))
+                    .thenReturn(ResponseEntity.ok(githubPull1Comments));
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            //WHEN
+
+            Method method = githubApiService.getClass().getDeclaredMethod("getSonarProjectIdFromPullByComments", String.class, List.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, pullDtos);
+
+            //THEN
+
+            assertThat(result, Matchers.is(Optional.empty()));
+
+            verify(restTemplate).exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void getRepoDataWithFrontendMatch() {
+        try {
+
+            //GIVEN
+            String repoUrl = "github.com/repo";
+
+            List<GithubPullDto> pullDtos = List.of(new GithubPullDto("open", 1));
+
+            GithubPullComment[] githubPull1Comments = {
+                    GithubPullComment.builder()
+                            .body("dashboard?id=test-frontend&pullRequest")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("NOTsonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("dashboard?id=test-frontend&pullRequest")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build(),
+                    GithubPullComment.builder()
+                            .body("dashboard?id=test&pullRequest")
+                            .user(GithubPullCommentUser.builder()
+                                    .login("sonarcloud[bot]")
+                                    .build())
+                            .build()
+            };
+
+            when(restTemplate.exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class))
+                    .thenReturn(ResponseEntity.ok(githubPull1Comments));
+
+            Object githubApiService = GithubApiService.class.getDeclaredConstructor(RestTemplate.class).newInstance(restTemplate);
+
+            //WHEN
+
+            Method method = githubApiService.getClass().getDeclaredMethod("getSonarProjectIdFromPullByComments", String.class, List.class);
+            method.setAccessible(true);
+            Object result = method.invoke(githubApiService, repoUrl, pullDtos);
+
+            //THEN
+
+            assertThat(result, Matchers.is(Optional.of("test")));
+
+            verify(restTemplate).exchange(repoUrl + "/issues/1/comments", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubPullComment[].class);
+
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             e.printStackTrace();
             fail();
         }
