@@ -14,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -66,9 +68,14 @@ public class GithubApiService {
 
         List<GithubPullDto> allPulls = getPulls(repoUrl);
 
+        Optional<String> sonarProjectId = getSonarProjectIdFromPullByComments(repoUrl, allPulls);
+
         int openPulls = Math.toIntExact(allPulls.stream().filter(githubPullDto -> "open".equals(githubPullDto.getState())).count());
 
         Optional<String> workflowBadgeUrl = getWorkflowBadgeUrlIfAny(repoUrl);
+
+        String coverageBadgeUrl = sonarProjectId.map(s -> "https://sonarcloud.io/api/project_badges/measure?project=" + s + "&metric=coverage").orElse(null);
+        String qualityBadgeUrl = sonarProjectId.map(s -> "https://sonarcloud.io/api/project_badges/measure?project=" + s + "&metric=alert_status").orElse(null);
 
         return Optional.of(Capstone.builder()
                 .studentName(repoDto.getOwner().getName())
@@ -80,6 +87,8 @@ public class GithubApiService {
                 .updatedAt(mostRecentCommitDate != null ? mostRecentCommitDate : repoDto.getUpdatedAt())
                 .updatedDefaultAt(repoDto.getUpdatedAt())
                 .workflowBadgeUrl(workflowBadgeUrl.orElse(""))
+                .coverageBadgeUrl(coverageBadgeUrl)
+                .qualityBadgeUrl(qualityBadgeUrl)
                 .build());
     }
 
@@ -158,5 +167,56 @@ public class GithubApiService {
         }
 
         return Optional.empty();
+    }
+
+    private Optional<String> getSonarProjectIdFromPullByComments(String repoUrl, List<GithubPullDto> allPulls) {
+        List<String> matches = new ArrayList<>();
+
+        for (GithubPullDto pull : allPulls) {
+            ResponseEntity<GithubPullComment[]> pullComments = restTemplate.exchange(repoUrl + "/issues/" + pull.getNumber() + "/comments", HttpMethod.GET, new HttpEntity<>(headers), GithubPullComment[].class);
+
+            for (GithubPullComment githubPullComment : pullComments.getBody()) {
+                if ("sonarcloud[bot]".equals(githubPullComment.getUser().getLogin())) {
+                    String body = githubPullComment.getBody();
+
+                    Pattern p = Pattern.compile("(dashboard\\?id=)(.*?)(&pullRequest)");
+                    Matcher m = p.matcher(body);
+
+                    while (m.find()) {
+                        matches.add(m.group().split("=")[1].split("&")[0]);
+                    }
+                }
+            }
+        }
+
+        if (matches.isEmpty()) {
+            return Optional.empty();
+        }
+
+        List<String> sonarKeys = matches.stream()
+                .distinct()
+                .toList();
+
+        if (sonarKeys.size() == 1) {
+            return Optional.ofNullable(sonarKeys.get(0));
+        }
+
+        List<String> sonarBackendKeys = sonarKeys.stream()
+                .filter(key -> key.contains("backend"))
+                .toList();
+
+        if (sonarBackendKeys.size() == 1) {
+            return Optional.ofNullable(sonarBackendKeys.get(0));
+        }
+
+        List<String> sonarNotFrontendKeys = sonarKeys.stream()
+                .filter(key -> !key.contains("frontend"))
+                .toList();
+
+        if (sonarNotFrontendKeys.size() == 1) {
+            return Optional.ofNullable(sonarNotFrontendKeys.get(0));
+        }
+
+        return Optional.ofNullable(sonarKeys.get(0));
     }
 }

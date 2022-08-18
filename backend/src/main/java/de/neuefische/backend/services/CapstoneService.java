@@ -48,6 +48,8 @@ public class CapstoneService {
         capstone.setUpdatedAt(refreshedCapstone.getUpdatedAt());
         capstone.setUpdatedDefaultAt(refreshedCapstone.getUpdatedDefaultAt());
         capstone.setWorkflowBadgeUrl(refreshedCapstone.getWorkflowBadgeUrl());
+        capstone.setCoverageBadgeUrl(refreshedCapstone.getCoverageBadgeUrl());
+        capstone.setQualityBadgeUrl(refreshedCapstone.getQualityBadgeUrl());
         return capstoneRepo.save(capstone);
     }
 
