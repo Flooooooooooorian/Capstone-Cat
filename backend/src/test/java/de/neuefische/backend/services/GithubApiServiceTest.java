@@ -115,9 +115,9 @@ class GithubApiServiceTest {
                 .thenReturn(ResponseEntity.ok(repoDto));
         when(restTemplate.exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class))
                 .thenReturn(ResponseEntity.ok(branchDtos));
-        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=0", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class))
+        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class))
                 .thenReturn(ResponseEntity.ok(commit100Dtos));
-        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class)).
+        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=2", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class)).
                 thenReturn(ResponseEntity.ok(commit50Dtos));
         when(restTemplate.exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class))
                 .thenReturn(ResponseEntity.ok(new GithubCompareDto(5, "feature", List.of(commitDto))));
@@ -152,8 +152,9 @@ class GithubApiServiceTest {
 
         verify(restTemplate).exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
         verify(restTemplate).exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class);
-        verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=0", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
+        verify(restTemplate, times(0)).exchange(repoUrl + "/commits?sha=main&per_page=100&page=0", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
         verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
+        verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=2", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
         verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
         verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
         verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
@@ -588,9 +589,9 @@ class GithubApiServiceTest {
                 .thenReturn(ResponseEntity.ok(repoDto));
         when(restTemplate.exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class))
                 .thenReturn(ResponseEntity.ok(branchDtos));
-        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=0", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class))
+        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class))
                 .thenReturn(ResponseEntity.ok(commit100Dtos));
-        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class)).
+        when(restTemplate.exchange(repoUrl + "/commits?sha=main&per_page=100&page=2", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class)).
                 thenReturn(ResponseEntity.ok(new GithubCommitDto[]{}));
         when(restTemplate.exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class))
                 .thenReturn(ResponseEntity.ok(new GithubCompareDto(5, "feature", List.of(commitDto))));
@@ -625,8 +626,8 @@ class GithubApiServiceTest {
 
         verify(restTemplate).exchange(repoUrl, HttpMethod.GET, new HttpEntity<>(headers), GithubRepoDto.class);
         verify(restTemplate).exchange(repoUrl + "/branches", HttpMethod.GET, new HttpEntity<>(headers), GithubBranchDto[].class);
-        verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=0", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
         verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=1", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
+        verify(restTemplate).exchange(repoUrl + "/commits?sha=main&per_page=100&page=2", HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
         verify(restTemplate).exchange(repoUrl + "/compare/main...feature", HttpMethod.GET, new HttpEntity<>(headers), GithubCompareDto.class);
         verify(restTemplate).exchange(repoUrl + "/pulls?state=all", HttpMethod.GET, new HttpEntity<>(headers), GithubPullDto[].class);
         verify(restTemplate).exchange(repoUrl + "/actions/workflows", HttpMethod.GET, new HttpEntity<>(headers), GithubWorkflowsDto.class);
