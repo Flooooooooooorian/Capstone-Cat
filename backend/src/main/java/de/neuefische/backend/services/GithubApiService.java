@@ -116,7 +116,7 @@ public class GithubApiService {
         ArrayList<GithubCommitDto> commits = new ArrayList<>();
         ResponseEntity<GithubCommitDto[]> commitResponse;
         int perPage = 100;
-        int page = 0;
+        int page = 1;
         do {
             commitResponse = restTemplate.exchange(repoUrl + "/commits?sha=" + branch + "&per_page=" + perPage + "&page=" + page, HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
             if (commitResponse.getBody() != null) {
