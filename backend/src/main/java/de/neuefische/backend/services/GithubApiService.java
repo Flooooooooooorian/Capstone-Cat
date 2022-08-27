@@ -114,12 +114,16 @@ public class GithubApiService {
 
     private int getCommitCountFromDefault(String repoUrl, String branch) {
         ArrayList<GithubCommitDto> commits = new ArrayList<>();
-        for (int page = 0; commits.size() % 100 == 0; page++) {
-            ResponseEntity<GithubCommitDto[]> commitResponse = restTemplate.exchange(repoUrl + "/commits?sha=" + branch + "&per_page=100&page=" + page, HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
+        ResponseEntity<GithubCommitDto[]> commitResponse;
+        int perPage = 100;
+        int page = 0;
+        do {
+            commitResponse = restTemplate.exchange(repoUrl + "/commits?sha=" + branch + "&per_page=" + perPage + "&page=" + page, HttpMethod.GET, new HttpEntity<>(headers), GithubCommitDto[].class);
             if (commitResponse.getBody() != null) {
                 commits.addAll(Arrays.stream(commitResponse.getBody()).toList());
             }
-        }
+            page++;
+        } while (commitResponse.getBody().length == perPage);
         return commits.size();
     }
 
