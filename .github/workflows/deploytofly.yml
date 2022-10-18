@@ -63,4 +63,4 @@ jobs:
           name: app.jar
           path: backend/target
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only -a capstone-cap
