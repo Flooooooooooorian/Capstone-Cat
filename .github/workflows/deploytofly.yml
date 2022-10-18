@@ -55,7 +55,7 @@ jobs:
       name: production-fly.io
       url: https://capstone-cap.fly.dev/
     env:
-      HEROKU_API_KEY: ${{ secrets.FLY_API_KEY }}
+      FLY_API_TOKEN: ${{ secrets.FLY_API_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
