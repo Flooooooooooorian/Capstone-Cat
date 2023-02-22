@@ -29,7 +29,6 @@ function App() {
           <Route path={"course/create"} element={<AddCoursePage addCourse={addCourse}/>}/>
           <Route path="course/:courseId" element={<CoursePage courses={courses} refreshCapstoneById={refreshCapstonesById}/>}> </Route>
         </Route>
-
       </Routes>
     </ThemeProvider>
   );
